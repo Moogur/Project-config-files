@@ -467,7 +467,6 @@ const script = require('./gulp/script.js');
 const clean = require('./gulp/clean.js');
 const github = require('./gulp/github.js');
 const sprite = require('./gulp/sprite.js');
-const smartgrid = require('./gulp/smartgrid.js');
 
 function watch() {
   browserSync.init({ server: { baseDir: path.baseDir, }, browser: path.browsers.firefox });
@@ -486,7 +485,6 @@ gulp.task('font', font);
 gulp.task('default', gulp.series(clean, sprite, gulp.parallel(image, style, script, htmlmin, font), watch));
 gulp.task('del', gulp.series(clean, sprite, gulp.parallel(image, style, script, htmlmin, font)));
 gulp.task('deploy', github);
-gulp.task('smartgrid', smartgrid);
 ''')
     print('---------------------------------------')
     print('Файл gulp - gulplfile.js успешно создан')
@@ -500,7 +498,7 @@ const isProduction = false;
 // Нкжно ли составлять sourcemap для скриптов и стилей  
 const sourceMap = false;
 //Font awesome расширение шрифта
-const expansion = 'woff2';
+const expansion = 'woff2'; //woff | ttf | woff2 | eot
 
 module.exports = {
   'isProd': isProduction,
@@ -623,10 +621,11 @@ module.exports = function() {
 const gulp = require('gulp');
 const sass = require('gulp-sass');
 const browserSync = require('browser-sync').create();
-const autoprefixer = require('gulp-autoprefixer');
-const cleanCSS = require('gulp-clean-css');
-const gcmq = require('gulp-group-css-media-queries');
-const uncss = require('gulp-uncss');
+const postcss = require('gulp-postcss');
+const autoprefixer = require('autoprefixer');
+const cssnano = require('cssnano');
+const mqpacker = require('css-mqpacker');
+const uncss = require('postcss-uncss');
 const gulpif = require('gulp-if');
 const sourcemaps = require('gulp-sourcemaps');
 
@@ -636,12 +635,14 @@ module.exports = function() {
   return gulp.src(path.styles.app)
     .pipe(gulpif(path.isMap, sourcemaps.init({ loadMaps: true })))
     .pipe(sass().on('error', sass.logError))
-    .pipe(gulpif(path.isProd, uncss({
-      html: [`${path.pug.dist}/**/*.html`]
-    })))
-    .pipe(gcmq())
-    .pipe(gulpif(path.isProd, autoprefixer({ browsers: ['> 0.1%'], cascade: false })))
-    .pipe(gulpif(path.isProd, cleanCSS({ level: 2 })))
+    .pipe(gulpif(path.isProd, postcss([
+      uncss({html: [`${path.pug.dist}/**/*.html`]}),
+      mqpacker(),
+      autoprefixer({ browsers: ['> 0.1%'], cascade: false }),
+      cssnano({preset: ['default', {
+        discardComments: {removeAll: true}
+      }]})
+    ])))
     .pipe(gulpif(path.isMap, sourcemaps.write(path.maps)))
     .pipe(gulp.dest(path.styles.dist))
     .pipe(browserSync.stream())
@@ -666,6 +667,7 @@ module.exports = function() {
 /* global module */
 
 const gulp = require('gulp');
+const ttf2woff = require('gulp-ttf2woff');
 const browserSync = require('browser-sync').create();
 const fs = require('fs');
 
@@ -675,9 +677,10 @@ module.exports = function() {
   const fd = fs.openSync(`${path.path}/../app/sass/core/_fonts.sass`, 'w+');
   const folder = fs.readdirSync(`${path.path}/../app/fonts`);
   for (let file of folder) {
-    fs.writeFileSync(fd, `@font-face\\n  font-family: "${file.split('.')[0]}"\\n  src: url("../fonts/${file}")\\n$${file.split('.')[0].split('-').pop()}: ${file.split('.')[0]}\\n\\n`, { flag: 'a' });
+    fs.writeFileSync(fd, `@font-face\\n  font-family: "${file.split('.')[0]}"\\n  src: url("../fonts/${file.split('.')[0]}.woff")\\n$${file.split('.')[0].split('-').pop()}: ${file.split('.')[0]}\\n\\n`, { flag: 'a' });
   };
   return gulp.src(path.fonts.app)
+    .pipe(ttf2woff())
     .pipe(gulp.dest(path.fonts.dist))
     .pipe(browserSync.stream())
 };
@@ -762,22 +765,6 @@ module.exports = function() {
     .pipe(browserSync.stream())
 };
 ''')
-    with open(fr"{getDirectory}/gulp/smartgrid.js", 'w', encoding='utf8') as fileGulpJS:
-        fileGulpJS.write(''''use strict';
-/* global module */
-
-const { exec } = require('child_process');
-
-module.exports = function() {
-  return exec('node smartgrid-config.js', function(error, stdout, stderr) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log(stdout);
-    };
-  })
-};
-''')
     with open(fr"{getDirectory}/gulp/sprite.mustache", 'w', encoding='utf8') as fileMustache:
         fileMustache.write('''{{#items}}
 ${{name}}: {{px.x}} {{px.y}} {{px.offset_x}} {{px.offset_y}} {{px.width}} {{px.height}} {{px.total_width}} {{px.total_height}} "{{{escaped_image}}}"
@@ -820,262 +807,6 @@ ${{name}}: {{px.x}} {{px.y}} {{px.offset_x}} {{px.offset_y}} {{px.width}} {{px.h
 ''')
 
 
-# TODO инициализация webpack-проекта
-def webpackProject():
-    if not os.path.isdir(fr'{getDirectory}/webpack'):
-        os.mkdir(fr'{getDirectory}/webpack')
-    # TODO создание консольных комманд webpack
-    with open(fr"{getDirectory}/package.json", 'r', encoding='utf8') as fileJSON:
-        data_json = json.load(fileJSON)
-    data_json['scripts'] = {
-        'wpProduction': 'webpack --mode production',
-        'wpDevelopment': 'webpack-dev-server --open --mode development',
-    }
-    with open(fr"{getDirectory}/package.json", 'w', encoding='utf8') as fileJSON:
-        json.dump(data_json, fileJSON, indent=4, ensure_ascii=False)
-    # TODO создание файла webpack.config.js
-    with open(fr"{getDirectory}/webpack.config.js", 'w', encoding='utf8') as fileWebpack:
-        fileWebpack.write(''''use strict';
-/* global module */
-
-const argv = require('yargs').argv;
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const merge = require('webpack-merge');
-
-const PATHS = require('./webpack/path.config.js');
-const pug = require('./webpack/pug.config.js');
-const sass = require('./webpack/sass.config.js');
-const imgAndFont = require('./webpack/image-and-font.config.js');
-const js = require('./webpack/js.config.js');
-
-const isDevelopment = argv.mode === 'development';
-
-module.exports = merge([
-  {
-  entry: PATHS.app,
-  output: {
-    filename: PATHS.FILENAME.js,
-    path: PATHS.dist,
-    publicPath: '/'
-  },
-  plugins: [
-    new CleanWebpackPlugin(),
-  ].concat(PATHS.generateHtmlPlugins(PATHS.pug)),
-  devtool: isDevelopment ? 'source-map' : 'none',
-  devServer: {
-    contentBase: PATHS.dist,
-    port: 8088,
-    open: 'firefox',
-    overlay: true
-  }},
-  js(),
-  pug(isDevelopment),
-  sass(),
-  imgAndFont()
-]);
-''')
-    print('---------------------------------------')
-    print('Файл webpack - webpack.config.js успешно создан')
-    # TODO создание файла image-and-font.config.js
-    with open(fr"{getDirectory}/webpack/image-and-font.config.js", 'w', encoding='utf8') as fileWebpack:
-        fileWebpack.write(''''use strict';
-/* global module */
-
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const PATHS = require('./path.config.js');
-
-module.exports = function() {
-  return {
-    module: {
-      rules: [
-        {
-          test: /\.(png|jpg|gif|svg)$/,
-          loader: 'file-loader',
-          options: {
-            name: '[name].[ext]'
-          },
-          exclude: '/node_modules/'
-        }
-      ]
-    },
-    plugins: [
-      new CopyWebpackPlugin([{
-        from: PATHS.fromImg,
-        to: PATHS.toImg
-      },
-      {
-        from: PATHS.fromFont,
-        to: PATHS.toFont
-      }])
-    ]
-  }
-};
-''')
-    # TODO создание файла js.config.js
-    with open(fr"{getDirectory}/webpack/js.config.js", 'w', encoding='utf8') as fileWebpack:
-        fileWebpack.write(''''use strict';
-/* global module */
-
-module.exports = function() {
-  return {
-    module: {
-      rules: [
-        {
-          test: /\.js$/,
-          loader: 'babel-loader',
-          exclude: '/node_modules/'
-        }
-      ]
-    }
-  }
-};
-''')
-    # TODO создание файла path.config.js
-    with open(fr"{getDirectory}/webpack/path.config.js", 'w', encoding='utf8') as fileWebpack:
-        fileWebpack.write(''''use strict';
-/* global module */
-
-const path = require('path');
-const fs = require('fs');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-
-module.exports = {
-  app: [
-    './app/js/index.js',
-    './app/sass/index.sass',
-  ],
-  dist: `${path.resolve()}/dist`,
-  pug: './app/pug',
-  fromImg: './app/img',
-  toImg: './dist/img',
-  fromFont: './app/fonts',
-  toFont: './dist/fonts',
-  FILENAME: {
-    js: './js/script.min.js',
-    css: './css/style.min.css',
-  },
-  generateHtmlPlugins: function (templateDir) {
-    const templateFiles = fs.readdirSync(`${path.resolve()}/${templateDir}`);
-    return templateFiles.map(item => {
-      const parts = item.split('.');
-      const name = parts[0];
-      const extension = parts[1];
-      return new HtmlWebpackPlugin({
-        filename: `${name}.html`,
-        template: `${templateDir}/${name}.${extension}`,
-        inject: false,
-      })
-    })
-  }
-};
-''')
-    # TODO создание файла postcss.config.js
-    with open(fr"{getDirectory}/webpack/postcss.config.js", 'w', encoding='utf8') as fileWebpack:
-        fileWebpack.write(''''use strict';
-/* global module */
-
-module.exports = {
-  plugins: [
-    require('autoprefixer')({
-      browsers: ['> 0.1%'],
-      cascade: false
-      }
-    ),
-    require('css-mqpacker'),
-    require('cssnano')({
-      preset: [
-        'default', {
-          discardComments: {
-            removeAll: true,
-          }
-        }
-      ]
-    })
-  ]
-};
-''')
-    # TODO создание файла pug.config.js
-    with open(fr"{getDirectory}/webpack/pug.config.js", 'w', encoding='utf8') as fileWebpack:
-        fileWebpack.write(''''use strict';
-/* global module */
-
-module.exports = function(isDevelopment) {
-  return {
-    module: {
-      rules: [
-        {
-          test: /\.pug$/,
-          loader: 'pug-loader',
-          options: { pretty: isDevelopment }
-        }
-      ]
-    }
-  }
-};
-''')
-    # TODO создание файла sass.config.js
-    with open(fr"{getDirectory}/webpack/sass.config.js", 'w', encoding='utf8') as fileWebpack:
-        fileWebpack.write(''''use strict';
-/* global module */
-
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const PATHS = require('./path.config.js');
-
-module.exports = function() {
-  return {
-    module: {
-      rules: [
-        {
-          test: /\.sass$/,
-          use: [
-            MiniCssExtractPlugin.loader,
-            {
-              loader: 'css-loader',
-            },
-            {
-              loader: 'postcss-loader',
-              options: {
-                config: { path: './webpack/postcss.config.js' } 
-              }
-            },
-            {
-              loader: 'sass-loader',
-            }
-          ],
-          exclude: '/node_modules/'
-        }
-      ]
-    },
-    plugins: [
-      new MiniCssExtractPlugin({
-        filename: PATHS.FILENAME.css
-      }),
-    ]
-  }
-};
-''')
-    print('В папке [webpack] - успешно созданы файлы:')
-    print('sass.config.js, path.config.js, postcss.config.js')
-    print('pug.config.js, js.config.js, image-and-font.config.js')
-
-
-def main():
-    print('---------------------------------------')
-    print('1 - инициализация gulp(& webpack)-проекта')
-    print('2 - инициализация webpack-проекта')
-    print('3 - выход')
-    print('---------------------------------------')
-    commands = input()
-    commands.strip()
-    if '1' in commands:
-        primaryProject()
-        gulpProject()
-    elif '2' in commands:
-        primaryProject()
-        webpackProject()
-    elif '3' in commands:
-        exit
-
-
 if __name__ == "__main__":
-    main()
+    primaryProject()
+    gulpProject()
