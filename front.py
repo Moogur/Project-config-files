@@ -2,62 +2,67 @@
 import shutil
 import json
 
-directory = {
+addDirectory = {
     'sass': ('grid', 'core', 'layout'),
     'js': ('functions', ),
     'img': bool,
     'fonts': bool,
     'pug': bool
 }
-file_sass = {
+addFileSass = {
   'core': ('_fonts.sass', '_base.sass', '_variables.sass', '_font-awesome.sass'),
-  'grid': ('_smart-grid-percentage.sass', '_smart-grid-rem.sass', '_smart-grid.sass', '_grid.sass')
+  'grid': ('_grid.sass', )
 }
-symlink_node_modules = r'/Users/dilkree/IT/JS_MODULES/node_modules'
-get_directory = os.getcwd()
+symlinkNodeModules = r'/Users/dilkree/IT/JS_MODULES/node_modules'
+getDirectory = os.getcwd()
 
 
-def dev_primary_progect():
+def primaryProject():
     # TODO создание дерева папок для проекта
-    for i in directory:
-        if type(directory[i]) is tuple:
-            for j in directory[i]:
-                os.makedirs(fr'{get_directory}/app/{i}/{j}')
+    for i in addDirectory:
+        if type(addDirectory[i]) is tuple:
+            for j in addDirectory[i]:
+                os.makedirs(fr'{getDirectory}/app/{i}/{j}')
         else:
-            os.mkdir(fr'{get_directory}/app/{i}')
+            os.mkdir(fr'{getDirectory}/app/{i}')
     # TODO создание символической ссылки на node_modules
-    os.symlink(symlink_node_modules, 'node_modules')
+    os.symlink(symlinkNodeModules, 'node_modules')
     print('---------------------------------------')
     print('Дерево каталогов проекта успешно создано')
     # TODO создание файла package.json
-    if not os.path.isfile(os.path.join(get_directory, 'package.json')):
+    if not os.path.isfile(os.path.join(getDirectory, 'package.json')):
         os.system('npm init -y')
     print('---------------------------------------')
     print('Файл package.json успешно создан')
     # TODO создание файла .eslintrc
-    with open(os.path.join(get_directory, '.eslintrc'), 'w', encoding='utf8') as eslint_file:
-        eslint_file.write('''{
+    with open(os.path.join(getDirectory, '.eslintrc'), 'w', encoding='utf8') as fileEsLint:
+        fileEsLint.write('''{
 "extends": "eslint:recommended",
 "parser": "babel-eslint",
 "globals": {
-    "window": true,
-    "document": true,
-    "console": true
+  "window": true,
+  "document": true,
+  "console": true,
+  "require": true
 },
 "rules": {
-    "no-console": "off"
+  "indent": ["error", 4],
+  "linebreak-style": ["error", "unix"],
+  "semi": ["error", "always"],
+  "comma-dangle": ["error", "never"],
+  "no-console": "off"
 }
 }''')
     # TODO создание файла .babelrc
-    with open(fr'{get_directory}/.babelrc', 'w', encoding='utf8') as babel_file:
-        babel_file.write('''{
+    with open(fr'{getDirectory}/.babelrc', 'w', encoding='utf8') as fileBabel:
+        fileBabel.write('''{
 "presets": [
-    "@babel/preset-env",
+  "@babel/preset-env",
 ]
 }''')
     # TODO создание файла .pug-lintrc
-    with open(fr'{get_directory}/.pug-lintrc', 'w', encoding='utf8') as puglint_file:
-        puglint_file.write('''{
+    with open(fr'{getDirectory}/.pug-lintrc', 'w', encoding='utf8') as filePugLint:
+        filePugLint.write('''{
 "disallowAttributeConcatenation": null, "disallowAttributeInterpolation": true,
 "disallowBlockExpansion": null, "disallowClassAttributeWithStaticValue": true, "disallowClassLiterals": null, "disallowClassLiteralsBeforeAttributes": null, "disallowClassLiteralsBeforeIdLiterals": null, "disallowDuplicateAttributes": true,
 "disallowHtmlText": null,
@@ -89,8 +94,8 @@ def dev_primary_progect():
 "validateSelfClosingTags": true
 }''')
     # TODO создание файла .sass-lint.yml
-    with open(fr'{get_directory}/.sass-lint.yml', 'w', encoding='utf8') as sass_file:
-        sass_file.write('''files:
+    with open(fr'{getDirectory}/.sass-lint.yml', 'w', encoding='utf8') as fileSassLint:
+        fileSassLint.write('''files:
   include: '**/*.sass'
 options:
   formatter: stylish
@@ -255,8 +260,8 @@ rules:
       convention: hyphenatedlowercase
   zero-unit: 1''')
 # TODO создание файла smart-grid-config.js
-    with open(fr'{get_directory}/smart-grid-config.js', 'w', encoding='utf-8') as sg_file:
-        sg_file.write(''''use strict';
+    with open(fr'{getDirectory}/smartgrid-config.js', 'w', encoding='utf-8') as fileSG:
+        fileSG.write(''''use strict';
 
 const smartgrid = require('smart-grid');
 
@@ -264,7 +269,7 @@ const smartgrid = require('smart-grid');
 const baseFontPx = '16px'; 
 
 const settings = {
-  filename: '_smart-grid',
+  filename: '_smartgrid',
   outputStyle: 'sass', 
   columns: 12,
   offset: '20px', // Расстояние между столбцами (gutter)
@@ -275,7 +280,7 @@ const settings = {
     fields: '30px' // Оступы по краям сайта (padding)
   },
   breakPoints: {
-    // Bootstrap breakpoint
+    // Bootstrap breakPoints
     xl: {
       width: '1200px',
       fields: "30px"
@@ -312,8 +317,8 @@ for (let value of arr) {
   smartgrid('./app/sass/grid', Object.assign(settings, value));
 }
 ''')
-    with open(fr'{get_directory}/.gitignore', 'w', encoding='utf8') as git_file:
-        git_file.write('''.DS_Store
+    with open(fr'{getDirectory}/.gitignore', 'w', encoding='utf8') as fileGitIgnore:
+        fileGitIgnore.write('''.DS_Store
 /dist/
 /gulp/
 /webpack/
@@ -327,18 +332,18 @@ for (let value of arr) {
 /web.py
 /gulpfile.js 
 /webpack.config.js
-/smart-grid-config.js
+/smartgrid-config.js
 **/*.psd
 **/maket*.jpg
 *.txt''')
     print('---------------------------------------')
-    print('Файлы: .babelrc, .eslintrc, .pug-lintrc, .sass-lint.yml, .gitignore, smart-grid-config.js успешно созданы')
+    print('Файлы: .babelrc, .eslintrc, .pug-lintrc, .sass-lint.yml, .gitignore, smartgrid-config.js успешно созданы')
     # TODO создание файлов *.sass
-    for i in file_sass:
-        for j in file_sass[i]:
-            with open(fr'{get_directory}/app/sass/{i}/{j}', 'w', encoding='utf8') as sass_file:
+    for i in addFileSass:
+        for j in addFileSass[i]:
+            with open(fr'{getDirectory}/app/sass/{i}/{j}', 'w', encoding='utf8') as fileSass:
                     if j == '_grid.sass':
-                        sass_file.write('''+reset()
+                        fileSass.write('''+reset()
 
 .debug
   +debug(rgba(0, 0, 0, 0.2), 1px solid #ffff00)
@@ -347,7 +352,7 @@ for (let value of arr) {
   +container()
 ''')
                     if j == '_font-awesome.sass':
-                        sass_file.write('''@import "../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss"
+                        fileSass.write('''@import "../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss"
 
 @font-face
   font-family: 'Font Awesome 5 Free'
@@ -384,11 +389,11 @@ for (let value of arr) {
 ''')
                     else:
                         pass
-    with open(fr'{get_directory}/app/sass/style.sass', 'w', encoding='utf8') as sass_file:
-        sass_file.write('''// Folder: Grid
-@import "./grid/_smart-grid.sass"
-//@import "./grid/_smart-grid-percentage.sass"
-//@import "./grid/_smart-grid-rem.sass"
+    with open(fr'{getDirectory}/app/sass/style.sass', 'w', encoding='utf8') as fileSass:
+        fileSass.write('''// Folder: Grid
+@import "./grid/_smartgrid.sass"
+//@import "./grid/_smartgrid-percentage.sass"
+//@import "./grid/_smartgrid-rem.sass"
 @import "./grid/_grid.sass"
 
 // Folder: Core
@@ -398,12 +403,11 @@ for (let value of arr) {
 @import "./core/_base.sass"
 ''')
     print('---------------------------------------')
-    print(r'В папке [app/sass] успешно создан файл - style.sass')
-    print(r'А также файлы - _fonts.sass, _variables.sass, _base.sass, _grid.sass')
-    print(r'_smart-grid.sass, _smart-grid-percentage.sass, _smart-grid-rem.sass, _grid.sass')
+    print(r'В папке [app/sass] успешно создан файл - style')
+    print(r'А также файлы - fonts, variables, base, grid')
     # TODO создание файла index.pug
-    with open(fr'{get_directory}/app/pug/index.pug', 'w', encoding='utf8') as pug_file:
-        pug_file.write('''doctype html
+    with open(fr'{getDirectory}/app/pug/index.pug', 'w', encoding='utf8') as filePug:
+        filePug.write('''doctype html
 html
   head
     meta(charset="utf-8")
@@ -413,15 +417,13 @@ html
     ''')
     print('---------------------------------------')
     print(r'В папке [app/pug] успешно создан файл - index.pug')
-    with open(fr'{get_directory}/app/js/script.js', 'w', encoding='utf8') as script_file:
-        script_file.write(''''use strict';
-/* global window */
+    with open(fr'{getDirectory}/app/js/script.js', 'w', encoding='utf8') as fileJS:
+        fileJS.write(''''use strict';
 
 // import {checkCalc} from './functions/check-calc.js';
 ''')
-    with open(fr'{get_directory}/app/js/functions/check-calc.js', 'w', encoding='utf8') as script_file:
-        script_file.write(''''use strict';
-/* global document */
+    with open(fr'{getDirectory}/app/js/functions/check-calc.js', 'w', encoding='utf8') as fileJS:
+        fileJS.write(''''use strict';
 
 function checkCalc () {
   window.onload =  function () {
@@ -433,28 +435,25 @@ function checkCalc () {
       style.setAttribute('href', './css/style.css');
     } else {
       style.setAttribute('href', './css/style-percentage.css');
-    }
+    };
     document.body.appendChild(style);
     console.log(1);
   }
-}
+};
 
 export {checkCalc};
 ''')
     print('---------------------------------------')
     print(r'В папке [app/js] успешно созданы файлы - script.js, check-calc.js')
-    print('---------------------------------------')
-    print('Первоночальная инициализация проекта прошла успешно')
 
 
 # TODO инициализация gulp-проекта
-def gulp_prodject():
-    if not os.path.isdir(fr'{get_directory}/gulp'):
-        os.mkdir(fr'{get_directory}/gulp')
+def gulpProject():
+    if not os.path.isdir(fr'{getDirectory}/gulp'):
+        os.mkdir(fr'{getDirectory}/gulp')
     # TODO создание файла gulpfile.js
-    with open(os.path.join(get_directory, 'gulpfile.js'), 'w', encoding='utf8') as gulp_file:
-        gulp_file.write(''''use strict';
-/* global require */
+    with open(os.path.join(getDirectory, 'gulpfile.js'), 'w', encoding='utf8') as fileGulpJS:
+        fileGulpJS.write(''''use strict';
 
 const gulp = require('gulp');
 const browserSync = require('browser-sync').create();
@@ -468,7 +467,7 @@ const script = require('./gulp/script.js');
 const clean = require('./gulp/clean.js');
 const github = require('./gulp/github.js');
 const sprite = require('./gulp/sprite.js');
-const smartGrid = require('./gulp/smart-grid.js');
+const smartgrid = require('./gulp/smartgrid.js');
 
 function watch() {
   browserSync.init({ server: { baseDir: path.baseDir, }, browser: path.browsers.firefox });
@@ -487,13 +486,13 @@ gulp.task('font', font);
 gulp.task('default', gulp.series(clean, sprite, gulp.parallel(image, style, script, htmlmin, font), watch));
 gulp.task('del', gulp.series(clean, sprite, gulp.parallel(image, style, script, htmlmin, font)));
 gulp.task('deploy', github);
-gulp.task('smartgrid', smartGrid);
+gulp.task('smartgrid', smartgrid);
 ''')
     print('---------------------------------------')
     print('Файл gulp - gulplfile.js успешно создан')
     # TODO создание файла path.js
-    with open(fr"{get_directory}/gulp/path.js", 'w', encoding='utf8') as gulp_file:
-        gulp_file.write(''''use strict';
+    with open(fr"{getDirectory}/gulp/path.js", 'w', encoding='utf8') as fileGulpJS:
+        fileGulpJS.write(''''use strict';
 /* global module */
 
 // true - финальный, false - разработка
@@ -505,7 +504,7 @@ const expansion = 'woff2';
 
 module.exports = {
   'isProd': isProduction,
-  'sMap': sourceMap,
+  'isMap': sourceMap,
   'styles': {
     'app': './app/sass/style*.sass',
     'dist': './dist/css'
@@ -553,9 +552,9 @@ module.exports = {
 };
 ''')
     # TODO создание файла script.js
-    with open(fr"{get_directory}/gulp/script.js", 'w', encoding='utf8') as gulp_file:
-        gulp_file.write(''''use strict';
-/* global module, require */
+    with open(fr"{getDirectory}/gulp/script.js", 'w', encoding='utf8') as fileGulpJS:
+        fileGulpJS.write(''''use strict';
+/* global module */
 
 const gulp = require('gulp');
 const browserSync = require('browser-sync').create();
@@ -572,9 +571,9 @@ module.exports = function() {
 };
 ''')
     # TODO создание файла webpack.js
-    with open(fr"{get_directory}/gulp/webpack.js", 'w', encoding='utf8') as gulp_file:
-        gulp_file.write(''''use strict';
-/* global module, require */
+    with open(fr"{getDirectory}/gulp/webpack.js", 'w', encoding='utf8') as fileGulpJS:
+        fileGulpJS.write(''''use strict';
+/* global module */
 
 const path = require('./path.js');
 
@@ -591,14 +590,14 @@ module.exports = {
       }
     ]
   },
-  devtool: path.sMap ? 'source-map' : 'none',
+  devtool: path.isMap ? 'source-map' : 'none',
   mode: path.isProd ? 'production' : 'development'
 };
 ''')
     # TODO создание файла image.js
-    with open(fr"{get_directory}/gulp/image.js", 'w', encoding='utf8') as gulp_file:
-        gulp_file.write(''''use strict';
-/* global require, module */
+    with open(fr"{getDirectory}/gulp/image.js", 'w', encoding='utf8') as fileGulpJS:
+        fileGulpJS.write(''''use strict';
+/* global module */
 
 const gulp = require('gulp');
 const browserSync = require('browser-sync').create();
@@ -617,9 +616,9 @@ module.exports = function() {
 };
 ''')
     # TODO создание файла style.js
-    with open(fr"{get_directory}/gulp/style.js", 'w', encoding='utf8') as gulp_file:
-        gulp_file.write(''''use strict';
-/* global require, module */
+    with open(fr"{getDirectory}/gulp/style.js", 'w', encoding='utf8') as fileGulpJS:
+        fileGulpJS.write(''''use strict';
+/* global module */
 
 const gulp = require('gulp');
 const sass = require('gulp-sass');
@@ -635,7 +634,7 @@ const path = require('./path.js');
 
 module.exports = function() {
   return gulp.src(path.styles.app)
-    .pipe(gulpif(path.sMap, sourcemaps.init({ loadMaps: true })))
+    .pipe(gulpif(path.isMap, sourcemaps.init({ loadMaps: true })))
     .pipe(sass().on('error', sass.logError))
     .pipe(gulpif(path.isProd, uncss({
       html: [`${path.pug.dist}/**/*.html`]
@@ -643,15 +642,15 @@ module.exports = function() {
     .pipe(gcmq())
     .pipe(gulpif(path.isProd, autoprefixer({ browsers: ['> 0.1%'], cascade: false })))
     .pipe(gulpif(path.isProd, cleanCSS({ level: 2 })))
-    .pipe(gulpif(path.sMap, sourcemaps.write(path.maps)))
+    .pipe(gulpif(path.isMap, sourcemaps.write(path.maps)))
     .pipe(gulp.dest(path.styles.dist))
     .pipe(browserSync.stream())
 };
 ''')
     # TODO создание файла clean.js
-    with open(fr"{get_directory}/gulp/clean.js", 'w', encoding='utf8') as gulp_file:
-        gulp_file.write(''''use strict';
-/* global require, module */
+    with open(fr"{getDirectory}/gulp/clean.js", 'w', encoding='utf8') as fileGulpJS:
+        fileGulpJS.write(''''use strict';
+/* global module */
 
 const del = require('del');
 
@@ -662,9 +661,9 @@ module.exports = function() {
 };
 ''')
     # TODO создание файла font.js
-    with open(fr"{get_directory}/gulp/font.js", 'w', encoding='utf8') as gulp_file:
-        gulp_file.write(''''use strict';
-/* global require, module */
+    with open(fr"{getDirectory}/gulp/font.js", 'w', encoding='utf8') as fileGulpJS:
+        fileGulpJS.write(''''use strict';
+/* global module */
 
 const gulp = require('gulp');
 const browserSync = require('browser-sync').create();
@@ -684,26 +683,29 @@ module.exports = function() {
 };
 ''')
     # TODO создание файла pug.js
-    with open(fr"{get_directory}/gulp/pug.js", 'w', encoding='utf8') as gulp_file:
-        gulp_file.write(''''use strict';
-/* global require, module */
+    with open(fr"{getDirectory}/gulp/pug.js", 'w', encoding='utf8') as fileGulpJS:
+        fileGulpJS.write(''''use strict';
+/* global module */
 
 const gulp = require('gulp');
 const browserSync = require('browser-sync').create();
 const pug = require('gulp-pug');
+const pugbem =require('gulp-pugbem');
 
 const path = require('./path.js');
 
 module.exports = function() {
   return gulp.src(path.pug.app)
-    .pipe(pug().on('error', console.log))
+    .pipe(pug({
+      plugins: [pugbem]
+    }).on('error', console.log))
     .pipe(gulp.dest(path.pug.dist))
     .pipe(browserSync.stream())
 };
 ''')
-    with open(fr"{get_directory}/gulp/github.js", 'w', encoding='utf8') as gulp_file:
-        gulp_file.write(''''use strict';
-/* global require, module */
+    with open(fr"{getDirectory}/gulp/github.js", 'w', encoding='utf8') as fileGulpJS:
+        fileGulpJS.write(''''use strict';
+/* global module */
 
 const gulp = require('gulp');
 const ghPages = require('gulp-gh-pages');
@@ -715,9 +717,9 @@ module.exports = function() {
     .pipe(ghPages());
 };
 ''')
-    with open(fr"{get_directory}/gulp/sprite.js", 'w', encoding='utf8') as gulp_file:
-        gulp_file.write(''''use strict';
-/* global require, module, console */
+    with open(fr"{getDirectory}/gulp/sprite.js", 'w', encoding='utf8') as fileGulpJS:
+        fileGulpJS.write(''''use strict';
+/* global module */
 
 const gulp = require('gulp');
 const browserSync = require('browser-sync').create();
@@ -760,36 +762,36 @@ module.exports = function() {
     .pipe(browserSync.stream())
 };
 ''')
-    with open(fr"{get_directory}/gulp/smart-grid.js", 'w', encoding='utf8') as gulp_file:
-        gulp_file.write(''''use strict';
-/* global require, module, console */
+    with open(fr"{getDirectory}/gulp/smartgrid.js", 'w', encoding='utf8') as fileGulpJS:
+        fileGulpJS.write(''''use strict';
+/* global module */
 
 const { exec } = require('child_process');
 
 module.exports = function() {
-  return exec('node smart-grid-config.js', function(error, stdout, stderr) {
+  return exec('node smartgrid-config.js', function(error, stdout, stderr) {
     if (error) {
       console.log(error);
     } else {
       console.log(stdout);
-    }
+    };
   })
-}
+};
 ''')
-    with open(fr"{get_directory}/gulp/sprite.mustache", 'w', encoding='utf8') as mustache_file:
-        mustache_file.write('''{{#items}}
+    with open(fr"{getDirectory}/gulp/sprite.mustache", 'w', encoding='utf8') as fileMustache:
+        fileMustache.write('''{{#items}}
 ${{name}}: {{px.x}} {{px.y}} {{px.offset_x}} {{px.offset_y}} {{px.width}} {{px.height}} {{px.total_width}} {{px.total_height}} "{{{escaped_image}}}"
 {{/items}}
 ''')
     print('---------------------------------------')
     print('В папке [gulp] - успешно созданы файлы: clean.js,')
     print('font.js, hpug.js, image.js, path.js, script.js, style.js, gpages.js') 
-    print('sprite.js, smart-grid.js, sprite.mustache')
+    print('sprite.js, smartgrid.js, sprite.mustache')
     #TODO Создание папки app/sass/sprite и в ней файла _mixins.sass
-    if not os.path.isdir(fr'{get_directory}/app/sass/sprite'):
-      os.mkdir(fr'{get_directory}/app/sass/sprite')
-    with open(fr"{get_directory}/app/sass/sprite/_mixins.sass", 'w', encoding='utf8') as sass_file:
-        sass_file.write('''@mixin spriteWidth($sprite)
+    if not os.path.isdir(fr'{getDirectory}/app/sass/sprite'):
+      os.mkdir(fr'{getDirectory}/app/sass/sprite')
+    with open(fr"{getDirectory}/app/sass/sprite/_mixins.sass", 'w', encoding='utf8') as fileSass:
+        fileSass.write('''@mixin spriteWidth($sprite)
   width: nth($sprite, 5)
 
 @mixin spriteHeight($sprite)
@@ -807,34 +809,34 @@ ${{name}}: {{px.x}} {{px.y}} {{px.offset_x}} {{px.offset_y}} {{px.width}} {{px.h
   @include spriteWidth($sprite)
   @include spriteHeight($sprite)
 ''')
-    with open(fr'{get_directory}/app/sass/sprite/_sprite.sass', 'w', encoding='utf8') as sass_file:
+    with open(fr'{getDirectory}/app/sass/sprite/_sprite.sass', 'w', encoding='utf8') as fileSass:
         pass
     print('---------------------------------------')
-    print('В папке [app/sass/sprite] - успешно созданы файлы _mixins.sass и _sprite.sass')
-    with open(fr'{get_directory}/app/sass/style.sass', 'a', encoding='utf8') as sass_file:
-        sass_file.write('''\n// Folder: Sprite
+    print('В папке [app/sass/sprite] - успешно созданы файлы mixins и sprite')
+    with open(fr'{getDirectory}/app/sass/style.sass', 'a', encoding='utf8') as fileSass:
+        fileSass.write('''\n// Folder: Sprite
 @import "./sprite/_sprite.sass"
 @import "./sprite/_mixins.sass"
 ''')
 
 
 # TODO инициализация webpack-проекта
-def webpack_prodject():
-    if not os.path.isdir(fr'{get_directory}/webpack'):
-        os.mkdir(fr'{get_directory}/webpack')
+def webpackProject():
+    if not os.path.isdir(fr'{getDirectory}/webpack'):
+        os.mkdir(fr'{getDirectory}/webpack')
     # TODO создание консольных комманд webpack
-    with open(fr"{get_directory}/package.json", 'r', encoding='utf8') as json_file:
-        data_json = json.load(json_file)
+    with open(fr"{getDirectory}/package.json", 'r', encoding='utf8') as fileJSON:
+        data_json = json.load(fileJSON)
     data_json['scripts'] = {
         'wpProduction': 'webpack --mode production',
         'wpDevelopment': 'webpack-dev-server --open --mode development',
     }
-    with open(fr"{get_directory}/package.json", 'w', encoding='utf8') as json_file:
-        json.dump(data_json, json_file, indent=4, ensure_ascii=False)
+    with open(fr"{getDirectory}/package.json", 'w', encoding='utf8') as fileJSON:
+        json.dump(data_json, fileJSON, indent=4, ensure_ascii=False)
     # TODO создание файла webpack.config.js
-    with open(fr"{get_directory}/webpack.config.js", 'w', encoding='utf8') as webpack_file:
-        webpack_file.write(''''use strict';
-/* global require, module */
+    with open(fr"{getDirectory}/webpack.config.js", 'w', encoding='utf8') as fileWebpack:
+        fileWebpack.write(''''use strict';
+/* global module */
 
 const argv = require('yargs').argv;
 const CleanWebpackPlugin = require('clean-webpack-plugin');
@@ -843,7 +845,7 @@ const merge = require('webpack-merge');
 const PATHS = require('./webpack/path.config.js');
 const pug = require('./webpack/pug.config.js');
 const sass = require('./webpack/sass.config.js');
-const imgAndFont = require('./webpack/imageAndFonts.config.js');
+const imgAndFont = require('./webpack/image-and-font.config.js');
 const js = require('./webpack/js.config.js');
 
 const isDevelopment = argv.mode === 'development';
@@ -874,10 +876,10 @@ module.exports = merge([
 ''')
     print('---------------------------------------')
     print('Файл webpack - webpack.config.js успешно создан')
-    # TODO создание файла imageAndFonts.config.js
-    with open(fr"{get_directory}/webpack/imageAndFonts.config.js", 'w', encoding='utf8') as webpack_file:
-        webpack_file.write(''''use strict';
-/* global require, module */
+    # TODO создание файла image-and-font.config.js
+    with open(fr"{getDirectory}/webpack/image-and-font.config.js", 'w', encoding='utf8') as fileWebpack:
+        fileWebpack.write(''''use strict';
+/* global module */
 
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const PATHS = require('./path.config.js');
@@ -907,11 +909,11 @@ module.exports = function() {
       }])
     ]
   }
-}
+};
 ''')
     # TODO создание файла js.config.js
-    with open(fr"{get_directory}/webpack/js.config.js", 'w', encoding='utf8') as webpack_file:
-        webpack_file.write(''''use strict';
+    with open(fr"{getDirectory}/webpack/js.config.js", 'w', encoding='utf8') as fileWebpack:
+        fileWebpack.write(''''use strict';
 /* global module */
 
 module.exports = function() {
@@ -926,12 +928,12 @@ module.exports = function() {
       ]
     }
   }
-}
+};
 ''')
     # TODO создание файла path.config.js
-    with open(fr"{get_directory}/webpack/path.config.js", 'w', encoding='utf8') as webpack_file:
-        webpack_file.write(''''use strict';
-/* global require, module */
+    with open(fr"{getDirectory}/webpack/path.config.js", 'w', encoding='utf8') as fileWebpack:
+        fileWebpack.write(''''use strict';
+/* global module */
 
 const path = require('path');
 const fs = require('fs');
@@ -968,8 +970,8 @@ module.exports = {
 };
 ''')
     # TODO создание файла postcss.config.js
-    with open(fr"{get_directory}/webpack/postcss.config.js", 'w', encoding='utf8') as webpack_file:
-        webpack_file.write(''''use strict';
+    with open(fr"{getDirectory}/webpack/postcss.config.js", 'w', encoding='utf8') as fileWebpack:
+        fileWebpack.write(''''use strict';
 /* global module */
 
 module.exports = {
@@ -990,11 +992,11 @@ module.exports = {
       ]
     })
   ]
-}
+};
 ''')
     # TODO создание файла pug.config.js
-    with open(fr"{get_directory}/webpack/pug.config.js", 'w', encoding='utf8') as webpack_file:
-        webpack_file.write(''''use strict';
+    with open(fr"{getDirectory}/webpack/pug.config.js", 'w', encoding='utf8') as fileWebpack:
+        fileWebpack.write(''''use strict';
 /* global module */
 
 module.exports = function(isDevelopment) {
@@ -1009,12 +1011,12 @@ module.exports = function(isDevelopment) {
       ]
     }
   }
-}
+};
 ''')
     # TODO создание файла sass.config.js
-    with open(fr"{get_directory}/webpack/sass.config.js", 'w', encoding='utf8') as webpack_file:
-        webpack_file.write(''''use strict';
-/* global require, module */
+    with open(fr"{getDirectory}/webpack/sass.config.js", 'w', encoding='utf8') as fileWebpack:
+        fileWebpack.write(''''use strict';
+/* global module */
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const PATHS = require('./path.config.js');
@@ -1050,11 +1052,11 @@ module.exports = function() {
       }),
     ]
   }
-}
+};
 ''')
     print('В папке [webpack] - успешно созданы файлы:')
     print('sass.config.js, path.config.js, postcss.config.js')
-    print('pug.config.js, js.config.js, imageAndFonts.config.js')
+    print('pug.config.js, js.config.js, image-and-font.config.js')
 
 
 def main():
@@ -1066,11 +1068,11 @@ def main():
     commands = input()
     commands.strip()
     if '1' in commands:
-        dev_primary_progect()
-        gulp_prodject()
+        primaryProject()
+        gulpProject()
     elif '2' in commands:
-        dev_primary_progect()
-        webpack_prodject()
+        primaryProject()
+        webpackProject()
     elif '3' in commands:
         exit
 
