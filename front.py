@@ -10,7 +10,7 @@ directory = {
     'pug': bool
 }
 file_sass = {
-  'core': ('_fonts.sass', '_base.sass', '_variables.sass'),
+  'core': ('_fonts.sass', '_base.sass', '_variables.sass', '_font-awesome.sass'),
   'grid': ('_smart-grid-percentage.sass', '_smart-grid-rem.sass', '_smart-grid.sass', '_grid.sass')
 }
 symlink_node_modules = r'/Users/dilkree/IT/JS_MODULES/node_modules'
@@ -346,6 +346,42 @@ for (let value of arr) {
 .container
   +container()
 ''')
+                    if j == '_font-awesome.sass':
+                        sass_file.write('''@import "../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss"
+
+@font-face
+  font-family: 'Font Awesome 5 Free'
+  font-style: normal
+  font-weight: 400
+  font-display: $fa-font-display
+  src: url('../fonts/fa-regular-400.woff2') format('woff2')
+
+.far
+  font-family: 'Font Awesome 5 Free'
+  font-weight: 400
+
+@font-face
+  font-family: 'Font Awesome 5 Brands'
+  font-style: normal
+  font-weight: normal
+  font-display: $fa-font-display
+  src: url('../fonts/fa-brands-400.woff2') format('woff2')
+
+.fab
+  font-family: 'Font Awesome 5 Brands';
+
+@font-face
+  font-family: 'Font Awesome 5 Free'
+  font-style: normal
+  font-weight: 900
+  font-display: $fa-font-display
+  src: url('../fonts/fa-solid-900.woff2') format('woff2')
+
+.fa,
+.fas
+  font-family: 'Font Awesome 5 Free'
+  font-weight: 900
+''')
                     else:
                         pass
     with open(fr'{get_directory}/app/sass/style.sass', 'w', encoding='utf8') as sass_file:
@@ -356,9 +392,10 @@ for (let value of arr) {
 @import "./grid/_grid.sass"
 
 // Folder: Core
-@import "./core/_base.sass"
+@import "./core/_font-awesome.sass"
 @import "./core/_fonts.sass"
 @import "./core/_variables.sass"
+@import "./core/_base.sass"
 ''')
     print('---------------------------------------')
     print(r'В папке [app/sass] успешно создан файл - style.sass')
@@ -380,15 +417,14 @@ html
         script_file.write(''''use strict';
 /* global window */
 
-window.onload = function () {
-  //import * as checkCalc from './functions/check-calc.js';
-}
+// import {checkCalc} from './functions/check-calc.js';
 ''')
     with open(fr'{get_directory}/app/js/functions/check-calc.js', 'w', encoding='utf8') as script_file:
         script_file.write(''''use strict';
 /* global document */
 
-export default (function () {
+function checkCalc () {
+  window.onload =  function () {
     let div = document.createElement('div');
     let style = document.createElement('style');
     style.setAttribute('rel', 'stylesheet');
@@ -399,13 +435,16 @@ export default (function () {
       style.setAttribute('href', './css/style-percentage.css');
     }
     document.body.appendChild(style);
-}())
+    console.log(1);
+  }
+}
+
+export {checkCalc};
 ''')
     print('---------------------------------------')
     print(r'В папке [app/js] успешно созданы файлы - script.js, check-calc.js')
     print('---------------------------------------')
     print('Первоночальная инициализация проекта прошла успешно')
-    main()
 
 
 # TODO инициализация gulp-проекта
@@ -461,6 +500,8 @@ gulp.task('smartgrid', smartGrid);
 const isProduction = false;
 // Нкжно ли составлять sourcemap для скриптов и стилей  
 const sourceMap = false;
+//Font awesome расширение шрифта
+const expansion = 'woff2';
 
 module.exports = {
   'isProd': isProduction,
@@ -492,7 +533,12 @@ module.exports = {
     'distSass': './app/sass/sprite'
   },
   'fonts': {
-    'app': './app/fonts/**/*.ttf',
+    'app': [
+      './app/fonts/**/*.ttf',
+      `./node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.${expansion}`, // fa, fas
+      `./node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.${expansion}`, // fab
+      `./node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.${expansion}` // far
+    ],
     'dist': './dist/fonts'
   },
   'baseDir': './dist',
@@ -770,7 +816,6 @@ ${{name}}: {{px.x}} {{px.y}} {{px.offset_x}} {{px.offset_y}} {{px.width}} {{px.h
 @import "./sprite/_sprite.sass"
 @import "./sprite/_mixins.sass"
 ''')
-    main()
 
 
 # TODO инициализация webpack-проекта
@@ -1010,23 +1055,21 @@ module.exports = function() {
     print('В папке [webpack] - успешно созданы файлы:')
     print('sass.config.js, path.config.js, postcss.config.js')
     print('pug.config.js, js.config.js, imageAndFonts.config.js')
-    main()
 
 
 def main():
     print('---------------------------------------')
-    print('0 - инициализация проекта')
     print('1 - инициализация gulp(& webpack)-проекта')
     print('2 - инициализация webpack-проекта')
     print('3 - выход')
     print('---------------------------------------')
     commands = input()
     commands.strip()
-    if '0' in commands:
+    if '1' in commands:
         dev_primary_progect()
-    elif '1' in commands:
         gulp_prodject()
     elif '2' in commands:
+        dev_primary_progect()
         webpack_prodject()
     elif '3' in commands:
         exit
