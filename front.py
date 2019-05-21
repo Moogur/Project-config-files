@@ -7,10 +7,13 @@ addDirectory = {
     'js': ('functions', ),
     'img': bool,
     'fonts': bool,
-    'pug': bool
+    'pug': ('mixin', )
+}
+addFilePug = {
+    'mixin': ('smartgrid.pug', )
 }
 addFileSass = {
-  'core': ('_fonts.sass', '_base.sass', '_variables.sass', '_font-awesome.sass'),
+  'core': ('_fonts.sass', '_base.sass', '_variables.sass', '_mixines.sass'),
   'grid': ('_grid.sass', )
 }
 symlinkNodeModules = r'/Users/dilkree/IT/JS_MODULES/node_modules'
@@ -34,25 +37,6 @@ def primaryProject():
         os.system('npm init -y')
     print('---------------------------------------')
     print('Файл package.json успешно создан')
-    # TODO создание файла .eslintrc
-    with open(os.path.join(getDirectory, '.eslintrc'), 'w', encoding='utf8') as fileEsLint:
-        fileEsLint.write('''{
-"extends": "eslint:recommended",
-"parser": "babel-eslint",
-"globals": {
-  "window": true,
-  "document": true,
-  "console": true,
-  "require": true
-},
-"rules": {
-  "indent": ["error", 4],
-  "linebreak-style": ["error", "unix"],
-  "semi": ["error", "always"],
-  "comma-dangle": ["error", "never"],
-  "no-console": "off"
-}
-}''')
     # TODO создание файла .babelrc
     with open(fr'{getDirectory}/.babelrc', 'w', encoding='utf8') as fileBabel:
         fileBabel.write('''{
@@ -60,223 +44,24 @@ def primaryProject():
   "@babel/preset-env",
 ]
 }''')
-    # TODO создание файла .pug-lintrc
-    with open(fr'{getDirectory}/.pug-lintrc', 'w', encoding='utf8') as filePugLint:
-        filePugLint.write('''{
-"disallowAttributeConcatenation": null, "disallowAttributeInterpolation": true,
-"disallowBlockExpansion": null, "disallowClassAttributeWithStaticValue": true, "disallowClassLiterals": null, "disallowClassLiteralsBeforeAttributes": null, "disallowClassLiteralsBeforeIdLiterals": null, "disallowDuplicateAttributes": true,
-"disallowHtmlText": null,
-"disallowIdAttributeWithStaticValue": null,
-"disallowIdLiterals": true,
-"disallowIdLiteralsBeforeAttributes": null, "disallowMultipleLineBreaks": true, "disallowSpaceAfterCodeOperator": null, "disallowSpacesInsideAttributeBrackets": true, "disallowSpecificAttributes": [ { "a": "name" } ], "disallowSpecificTags": null,
-"disallowStringConcatenation": true, "disallowStringInterpolation": null,
-"disallowTagInterpolation": null,
-"maximumNumberOfLines": null, "requireClassLiteralsBeforeAttributes": true, "requireClassLiteralsBeforeIdLiterals": true, "requireIdLiteralsBeforeAttributes": true, "requireLineFeedAtFileEnd": true,
-"requireLowerCaseAttributes": true,
-"requireLowerCaseTags": true,
-"requireSpaceAfterCodeOperator": true, "requireSpacesInsideAttributeBrackets": null, "requireSpecificAttributes":
-  [
-    { "form": "action" },
-  	{ "img": "alt" },
-	{ "input": "type" },
-    { "input[type=submit]": "value" }
-  ],
-"requireStrictEqualityOperators": true,
-"validateAttributeSeparator":
-  {
-    "separator": ", ",
-    "multiLineSeparator": " "
-  },
-"validateDivTags": true,
-"validateExtensions": true,
-"validateIndentation": 2,
-"validateLineBreaks": "LF",
-"validateSelfClosingTags": true
-}''')
-    # TODO создание файла .sass-lint.yml
-    with open(fr'{getDirectory}/.sass-lint.yml', 'w', encoding='utf8') as fileSassLint:
-        fileSassLint.write('''files:
-  include: '**/*.sass'
-options:
-  formatter: stylish
-  merge-default-rules: false
-rules:
-  bem-depth:
-    - 0
-    - max-depth: 1
-  border-zero:
-    - 1
-    - convention: zero
-  brace-style:
-    - 1
-    - allow-single-line: true
-  class-name-format:
-    - 1
-    - convention: hyphenatedlowercase
-  clean-import-paths:
-    - 1
-    - filename-extension: true
-      leading-underscore: true
-  empty-line-between-blocks:
-    - 1
-    - include: true
-    - ignore-single-line-rulesets: true
-  extends-before-declarations: 1
-  extends-before-mixins: 1
-  final-newline:
-    - 1
-    - include: true
-  force-attribute-nesting: 1
-  force-element-nesting: 1
-  force-pseudo-nesting: 0
-  function-name-format:
-    - 1
-    - allow-leading-underscore: true
-      convention: hyphenatedlowercase
-  hex-length:
-    - 1
-    - style: long
-  hex-notation:
-    - 1
-    - style: lowercase
-  id-name-format:
-    - 1
-    - convention: hyphenatedlowercase
-  indentation:
-    - 1
-    - size: 2
-  leading-zero:
-    - 1
-    - include: false
-  mixin-name-format:
-    - 1
-    - allow-leading-underscore: true
-      convention: hyphenatedlowercase
-  mixins-before-declarations: 1
-  nesting-depth:
-    - 1
-    - max-depth: 3
-  no-color-keywords: 1
-  no-color-literals: 0
-  no-css-comments: 1
-  no-debug: 1
-  no-duplicate-properties: 1
-  no-empty-rulesets: 1
-  no-extends: 0
-  no-ids: 0
-  no-important: 1
-  no-invalid-hex: 1
-  no-mergeable-selectors: 1
-  no-misspelled-properties:
-    - 1
-    - extra-properties: []
-  no-qualifying-elements:
-    - 1
-    - allow-element-with-attribute: false
-      allow-element-with-class: false
-      allow-element-with-id: false
-  no-trailing-zero: 1
-  no-transition-all: 0
-  no-url-protocols: 1
-  no-vendor-prefixes:
-    - 1
-    - additional-identifiers: []
-      excluded-identifiers: []
-  placeholder-in-extend: 1
-  placeholder-name-format:
-    - 1
-    - convention: hyphenatedlowercase
-  property-sort-order:
-    - 0
-    - ignore-custom-properties: false
-  property-units:
-    - 1
-    - global:
-        - ch
-        - em
-        - ex
-        - rem
-        - cm
-        - in
-        - mm
-        - pc
-        - pt
-        - px
-        - q
-        - vh
-        - vw
-        - vmin
-        - vmax
-        - deg
-        - grad
-        - rad
-        - turn
-        - ms
-        - s
-        - Hz
-        - kHz
-        - dpi
-        - dpcm
-        - dppx
-        - '%'
-      per-property: {}
-  quotes:
-    - 1
-    - style: single
-  shorthand-values:
-    - 1
-    - allowed-shorthands:
-        - 1
-        - 2
-        - 3
-  single-line-per-selector: 1
-  space-after-bang:
-    - 1
-    - include: false
-  space-after-colon:
-    - 1
-    - include: true
-  space-after-comma:
-    - 1
-    - include: true
-  space-before-bang:
-    - 1
-    - include: true
-  space-before-brace:
-    - 1
-    - include: true
-  space-before-colon: 1
-  space-between-parens:
-    - 1
-    - include: false
-  trailing-semicolon: 1
-  url-quotes: 1
-  variable-for-property:
-    - 0
-    - properties: []
-  variable-name-format:
-    - 1
-    - allow-leading-underscore: true
-      convention: hyphenatedlowercase
-  zero-unit: 1''')
-# TODO создание файла smart-grid-config.js
+    # TODO создание файла smart-grid-config.js
     with open(fr'{getDirectory}/smartgrid-config.js', 'w', encoding='utf-8') as fileSG:
         fileSG.write(''''use strict';
 
 const smartgrid = require('smart-grid');
 
 // Базовый размер шрифта
-const baseFontPx = '16px'; 
+const baseFontPx = '16px';
 
 const settings = {
   filename: '_smartgrid',
-  outputStyle: 'sass', 
+  outputStyle: 'sass',
   columns: 12,
   offset: '20px', // Расстояние между столбцами (gutter)
   // false => max-width, true => min-width
-  mobileFirst: false,  
+  mobileFirst: false,
   container: {
-    maxWidth: '1200px', // Ширина макета
+    maxWidth: '1280px', // Ширина макета
     fields: '30px' // Оступы по краям сайта (padding)
   },
   breakPoints: {
@@ -287,7 +72,7 @@ const settings = {
     },
     lg: {
       width: '992px',
-      fields: "16px" 
+      fields: "16px"
     },
     md: {
       width: '768px',
@@ -295,13 +80,13 @@ const settings = {
     },
     sm: {
       width: '576px',
-      fields: '18px' 
+      fields: '18px'
     }
   },
   mixinNames: {
     container: "container",
     shift: "offset",
-  }, 
+  },
   tab: "  "
 };
 
@@ -321,23 +106,18 @@ for (let value of arr) {
         fileGitIgnore.write('''.DS_Store
 /dist/
 /gulp/
-/webpack/
 /node_modules
 /.gitignore
-/.eslintrc
 /.babelrc
-/.pug-lintrc
-/.sass-lint.yml
 /package.json
-/web.py
-/gulpfile.js 
-/webpack.config.js
+/front.py
+/gulpfile.js
 /smartgrid-config.js
 **/*.psd
 **/maket*.jpg
 *.txt''')
     print('---------------------------------------')
-    print('Файлы: .babelrc, .eslintrc, .pug-lintrc, .sass-lint.yml, .gitignore, smartgrid-config.js успешно созданы')
+    print('Файлы: .babelrc, .gitignore, smartgrid-config.js успешно созданы')
     # TODO создание файлов *.sass
     for i in addFileSass:
         for j in addFileSass[i]:
@@ -351,55 +131,44 @@ for (let value of arr) {
 .container
   +container()
 ''')
-                    if j == '_font-awesome.sass':
-                        fileSass.write('''@import "../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss"
+                    elif j == '_mixines.sass':
+                        fileSass.write('''=fa($icon, $size: 16px, $color: #000000)
+  $svg: 'data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" style="enable-background:new 596 -596 1792 1792;" xml:space="preserve" fill="#{$color}" #{$icon}'
+  content: '\\00A0'
+  display: inline-block
+  line-height: $size
+  width: $size
+  height: $size
+  background-image: url($svg)
 
-@font-face
-  font-family: 'Font Awesome 5 Free'
-  font-style: normal
-  font-weight: 400
-  font-display: $fa-font-display
-  src: url('../fonts/fa-regular-400.woff2') format('woff2')
-
-.far
-  font-family: 'Font Awesome 5 Free'
-  font-weight: 400
-
-@font-face
-  font-family: 'Font Awesome 5 Brands'
-  font-style: normal
-  font-weight: normal
-  font-display: $fa-font-display
-  src: url('../fonts/fa-brands-400.woff2') format('woff2')
-
-.fab
-  font-family: 'Font Awesome 5 Brands';
-
-@font-face
-  font-family: 'Font Awesome 5 Free'
-  font-style: normal
-  font-weight: 900
-  font-display: $fa-font-display
-  src: url('../fonts/fa-solid-900.woff2') format('woff2')
-
-.fa,
-.fas
-  font-family: 'Font Awesome 5 Free'
-  font-weight: 900
+=fa4($icon, $size: 16px, $color: #000000)
+  $svg: 'data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" style="enable-background:new 596 -596 1792 1792;" xml:space="preserve" fill="#{$color}" #{$icon}'
+  content: '\\00A0'
+  display: inline-block
+  line-height: $size
+  width: $size
+  height: $size
+  background-image: url($svg)
 ''')
                     else:
                         pass
     with open(fr'{getDirectory}/app/sass/style.sass', 'w', encoding='utf8') as fileSass:
-        fileSass.write('''// Folder: Grid
+        fileSass.write('''// Normalize css
+//@import "/Users/dilkree/IT/JS_MODULES/normalize.css/normalize.css"
+
+// Folder: Grid
 @import "./grid/_smartgrid.sass"
 //@import "./grid/_smartgrid-percentage.sass"
 //@import "./grid/_smartgrid-rem.sass"
 @import "./grid/_grid.sass"
 
+//Font Awesome
+@import "/Users/dilkree/IT/JS_MODULES/font-awesome/_font-awesome-v5.8.2.sass"
+
 // Folder: Core
-@import "./core/_font-awesome.sass"
 @import "./core/_fonts.sass"
 @import "./core/_variables.sass"
+@import "./core/_mixines.sass"
 @import "./core/_base.sass"
 ''')
     print('---------------------------------------')
@@ -407,16 +176,67 @@ for (let value of arr) {
     print(r'А также файлы - fonts, variables, base, grid')
     # TODO создание файла index.pug
     with open(fr'{getDirectory}/app/pug/index.pug', 'w', encoding='utf8') as filePug:
-        filePug.write('''doctype html
+        filePug.write('''include ./mixin/smartgrid.pug
+doctype html
 html
   head
     meta(charset="utf-8")
     title NAME-PROGECT
-    link(rel="stylesheet", href="./css/style.css") 
+    link(rel="stylesheet" href="./css/style.css")
   body
     ''')
+    for i in addFilePug:
+        for j in addFilePug[i]:
+            with open(fr'{getDirectory}/app/pug/{i}/{j}', 'w', encoding='utf8') as filePug:
+                    if j == 'smartgrid.pug':
+                        filePug.write('''mixin debug12
+  div.debug
+    div
+      div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+
+mixin debug24
+  div.debug
+    div
+      div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+        div
+''')
     print('---------------------------------------')
-    print(r'В папке [app/pug] успешно создан файл - index.pug')
+    print(r'В папке [app/pug] успешно создан файл - index, smartgrid')
     with open(fr'{getDirectory}/app/js/script.js', 'w', encoding='utf8') as fileJS:
         fileJS.write(''''use strict';
 
@@ -427,11 +247,11 @@ html
 
 function checkCalc () {
   window.onload =  function () {
-    let div = document.createElement('div');
-    let style = document.createElement('style');
+    const div = document.createElement('div');
+    const style = document.createElement('style');
     style.setAttribute('rel', 'stylesheet');
     div.style.width = 'calc(100%)';
-    if (div.style.length > 0) { 
+    if (div.style.length > 0) {
       style.setAttribute('href', './css/style.css');
     } else {
       style.setAttribute('href', './css/style-percentage.css');
@@ -445,6 +265,13 @@ export {checkCalc};
 ''')
     print('---------------------------------------')
     print(r'В папке [app/js] успешно созданы файлы - script.js, check-calc.js')
+    with open (f'{getDirectory}/package.json', 'r', encoding='utf-8') as fileJSON:
+        data = json.load(fileJSON)
+    data['scripts'] = {
+      'smartgrid': 'node smartgrid-config.js'
+    }
+    with open (f'{getDirectory}/package.json', 'w', encoding='utf-8') as fileJSON:
+        json.dump(data, fileJSON, indent=2, ensure_ascii=False)
 
 
 # TODO инициализация gulp-проекта
@@ -495,10 +322,8 @@ gulp.task('deploy', github);
 
 // true - финальный, false - разработка
 const isProduction = false;
-// Нкжно ли составлять sourcemap для скриптов и стилей  
+// Нкжно ли составлять sourcemap для скриптов и стилей
 const sourceMap = false;
-//Font awesome расширение шрифта
-const expansion = 'woff2'; //woff | ttf | woff2 | eot
 
 module.exports = {
   'isProd': isProduction,
@@ -530,12 +355,7 @@ module.exports = {
     'distSass': './app/sass/sprite'
   },
   'fonts': {
-    'app': [
-      './app/fonts/**/*.ttf',
-      `./node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.${expansion}`, // fa, fas
-      `./node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.${expansion}`, // fab
-      `./node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.${expansion}` // far
-    ],
+    'app': './app/fonts/**/*.ttf',
     'dist': './dist/fonts'
   },
   'baseDir': './dist',
@@ -582,7 +402,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\\.js$/,
         loader: 'babel-loader',
         exclude: '/node_modules/'
       }
@@ -673,7 +493,7 @@ const fs = require('fs');
 
 const path = require('./path.js');
 
-module.exports = function() { 
+module.exports = function() {
   const fd = fs.openSync(`${path.path}/../app/sass/core/_fonts.sass`, 'w+');
   const folder = fs.readdirSync(`${path.path}/../app/fonts`);
   for (let file of folder) {
@@ -804,6 +624,8 @@ ${{name}}: {{px.x}} {{px.y}} {{px.offset_x}} {{px.offset_y}} {{px.width}} {{px.h
         fileSass.write('''\n// Folder: Sprite
 @import "./sprite/_sprite.sass"
 @import "./sprite/_mixins.sass"
+
+// Folder: Layout
 ''')
 
 
