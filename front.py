@@ -1,5 +1,4 @@
 ﻿import os
-import shutil
 import json
 
 addDirectory = {
@@ -132,23 +131,34 @@ for (let value of arr) {
   +container()
 ''')
                     elif j == '_mixines.sass':
-                        fileSass.write('''=fa($icon, $size: 16px, $color: #000000)
-  $svg: 'data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" style="enable-background:new 596 -596 1792 1792;" xml:space="preserve" fill="#{$color}" #{$icon}'
-  content: '\\00A0'
-  display: inline-block
-  line-height: $size
-  width: $size
-  height: $size
-  background-image: url($svg)
+                        fileSass.write('''=font-face($fontFace, $expansion)
+  @font-face          
+    font-family: "#{$fontFace}"
+    src: url("../fonts/#{$fontFace}.#{$expansion}")
 
-=fa4($icon, $size: 16px, $color: #000000)
-  $svg: 'data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" style="enable-background:new 596 -596 1792 1792;" xml:space="preserve" fill="#{$color}" #{$icon}'
-  content: '\\00A0'
+=box($width, $height: $width)
+  width: $width
+  height: $height
+
+=fa($icon, $size: 16px, $color: #000000)
+  $svg: 'data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" fill="#{$color}" viewBox="#{nth($icon, 2)}"><path d="#{nth($icon, 1)}"/></svg>'
+  content: ''
   display: inline-block
   line-height: $size
   width: $size
   height: $size
-  background-image: url($svg)
+  background: url($svg)
+  background-repeat: no-repeat
+
+=typicons($icon, $size: 16px, $color: #000000)
+  $svg: 'data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" fill="#{$color}" viewBox="#{nth($icon, 2)}"><path d="#{nth($icon, 1)}"/></svg>'
+  content: ''
+  display: inline-block
+  line-height: $size
+  width: $size
+  height: $size
+  background: url($svg)
+  background-repeat: no-repeat
 ''')
                     else:
                         pass
@@ -162,8 +172,9 @@ for (let value of arr) {
 //@import "./grid/_smartgrid-rem.sass"
 @import "./grid/_grid.sass"
 
-//Font Awesome
-@import "/Users/dilkree/IT/JS_MODULES/font-awesome/_font-awesome-v5.8.2.sass"
+//Font icon
+@import "/Users/dilkree/IT/JS_MODULES/Icon/font-awesome/_font-awesome.scss"
+@import "/Users/dilkree/IT/JS_MODULES/Icon/typicons/_typicons.scss"
 
 // Folder: Core
 @import "./core/_fonts.sass"
@@ -297,9 +308,9 @@ const sprite = require('./gulp/sprite.js');
 
 function watch() {
   browserSync.init({ server: { baseDir: path.baseDir, }, browser: path.browsers.firefox });
-  gulp.watch(path.styles.app, style);
-  gulp.watch(path.scripts.app, script);
-  gulp.watch(path.pug.app, htmlmin);
+  gulp.watch(path.styles.appWatch, style);
+  gulp.watch(path.scripts.appWatch, script);
+  gulp.watch(path.pug.appWatch, htmlmin);
   gulp.watch(path.images.appAll, gulp.series(sprite, image));
   gulp.watch(path.fonts.app, font);
 };
@@ -329,14 +340,17 @@ module.exports = {
   'isProd': isProduction,
   'isMap': sourceMap,
   'styles': {
+    'appWatch': './app/sass/**/*.sass',
     'app': './app/sass/style*.sass',
     'dist': './dist/css'
   },
   'scripts': {
-    'app': './app/js/**/*.js',
+    'appWatch': './app/js/**.*js',
+    'app': './app/js/script*.js',
     'dist': './dist/js'
   },
   'pug': {
+    'appWatch': './app/pug/**/*.pug',
     'app': './app/pug/*.pug',
     'dist': './dist'
   },
@@ -355,7 +369,7 @@ module.exports = {
     'distSass': './app/sass/sprite'
   },
   'fonts': {
-    'app': './app/fonts/**/*.ttf',
+    'app': './app/fonts/**/*.+(ttf|woff)',
     'dist': './dist/fonts'
   },
   'baseDir': './dist',

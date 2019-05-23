@@ -23,7 +23,7 @@ rules:
   clean-import-paths:
     - 1
     - filename-extension: true
-      leading-underscore: true
+    - leading-underscore: true
   declarations-before-nesting: 2
   empty-args:
     - 1
@@ -90,8 +90,8 @@ rules:
   no-qualifying-elements:
     - 1
     - allow-element-with-attribute: false
-      allow-element-with-class: false
-      allow-element-with-id: false
+    - allow-element-with-class: false
+    - allow-element-with-id: false
   no-trailing-whitespace: 1
   no-trailing-zero: 1
   no-transition-all: 0
@@ -106,7 +106,6 @@ rules:
       excluded-identifiers: []
   no-warn: 1
   one-declaration-per-line: 2
-#--------------------------------------
   placeholder-in-extend: 1
   placeholder-name-format:
     - 1
