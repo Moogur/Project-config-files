@@ -47,7 +47,7 @@ def primaryProject():
     with open(fr'{getDirectory}/smartgrid-config.js', 'w', encoding='utf-8') as fileSG:
         fileSG.write(''''use strict';
 
-const smartgrid = require('smart-grid');
+const smartgrid = require('/Users/dilkree/IT/JS_MODULES/my_modules/smart-grid');
 
 // Базовый размер шрифта
 const baseFontPx = '16px';
@@ -139,42 +139,18 @@ for (let value of arr) {
 =box($width, $height: $width)
   width: $width
   height: $height
-
-=fa($icon, $size: 16px, $color: #000000)
-  $svg: 'data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" fill="#{$color}" viewBox="#{nth($icon, 2)}"><path d="#{nth($icon, 1)}"/></svg>'
-  content: ''
-  display: inline-block
-  line-height: $size
-  width: $size
-  height: $size
-  background: url($svg)
-  background-repeat: no-repeat
-
-=typicons($icon, $size: 16px, $color: #000000)
-  $svg: 'data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" fill="#{$color}" viewBox="#{nth($icon, 2)}"><path d="#{nth($icon, 1)}"/></svg>'
-  content: ''
-  display: inline-block
-  line-height: $size
-  width: $size
-  height: $size
-  background: url($svg)
-  background-repeat: no-repeat
 ''')
                     else:
                         pass
     with open(fr'{getDirectory}/app/sass/style.sass', 'w', encoding='utf8') as fileSass:
-        fileSass.write('''// Normalize css
-//@import "/Users/dilkree/IT/JS_MODULES/normalize.css/normalize.css"
-
-// Folder: Grid
+        fileSass.write('''// Folder: Grid
 @import "./grid/_smartgrid.sass"
 //@import "./grid/_smartgrid-percentage.sass"
 //@import "./grid/_smartgrid-rem.sass"
 @import "./grid/_grid.sass"
 
 //Font icon
-@import "/Users/dilkree/IT/JS_MODULES/Icon/font-awesome/_font-awesome.scss"
-@import "/Users/dilkree/IT/JS_MODULES/Icon/typicons/_typicons.scss"
+@import "/Users/dilkree/IT/JS_MODULES/my_modules/icon/_mixines.sass"
 
 // Folder: Core
 @import "./core/_fonts.sass"
@@ -527,13 +503,14 @@ module.exports = function() {
 const gulp = require('gulp');
 const browserSync = require('browser-sync').create();
 const pug = require('gulp-pug');
-const pugbem =require('gulp-pugbem');
+const pugbem =require('/Users/dilkree/IT/JS_MODULES/my_modules/gulp-pugbem');
 
 const path = require('./path.js');
 
 module.exports = function() {
   return gulp.src(path.pug.app)
     .pipe(pug({
+      pretty: false,
       plugins: [pugbem]
     }).on('error', console.log))
     .pipe(gulp.dest(path.pug.dist))
