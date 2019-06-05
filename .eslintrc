@@ -17,6 +17,6 @@
   "comma-dangle": ["error", "never"],
   "no-console": "off",
   "max-len": ["error", { "code": 120 }],
-  "no-multiple-empty-lines": ["error", { max: 2, maxEOF: 1, maxBOF: 0 }],
+  "no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1, "maxBOF": 0 }],
   "func-style": ["error", "declaration"]
 }}

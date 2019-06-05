@@ -36,13 +36,6 @@ def primaryProject():
         os.system('npm init -y')
     print('---------------------------------------')
     print('Файл package.json успешно создан')
-    # TODO создание файла .babelrc
-    with open(fr'{getDirectory}/.babelrc', 'w', encoding='utf8') as fileBabel:
-        fileBabel.write('''{
-"presets": [
-  "@babel/preset-env",
-]
-}''')
     # TODO создание файла smart-grid-config.js
     with open(fr'{getDirectory}/smartgrid-config.js', 'w', encoding='utf-8') as fileSG:
         fileSG.write(''''use strict';
@@ -92,9 +85,6 @@ const settings = {
 const arr = [undefined, {
   filename: settings.filename + '-percentage',
   offset: (parseInt(settings.offset) / parseInt(settings.container.maxWidth) * 100) + '%'
-}, {
-  filename: settings.filename + '-rem',
-  offset: (parseInt(settings.offset) / parseInt(baseFontPx)) + 'rem'
 }];
 
 for (let value of arr) {
@@ -103,11 +93,11 @@ for (let value of arr) {
 ''')
     with open(fr'{getDirectory}/.gitignore', 'w', encoding='utf8') as fileGitIgnore:
         fileGitIgnore.write('''.DS_Store
+/.vscode/
 /dist/
 /gulp/
 /node_modules
 /.gitignore
-/.babelrc
 /package.json
 /front.py
 /gulpfile.js
@@ -116,13 +106,13 @@ for (let value of arr) {
 **/maket*.jpg
 *.txt''')
     print('---------------------------------------')
-    print('Файлы: .babelrc, .gitignore, smartgrid-config.js успешно созданы')
+    print('Файлы: .gitignore, smartgrid-config.js успешно созданы')
     # TODO создание файлов *.sass
     for i in addFileSass:
         for j in addFileSass[i]:
             with open(fr'{getDirectory}/app/sass/{i}/{j}', 'w', encoding='utf8') as fileSass:
-                    if j == '_grid.sass':
-                        fileSass.write('''+reset()
+                if j == '_grid.sass':
+                    fileSass.write('''+reset()
 
 .debug
   +debug(rgba(0, 0, 0, 0.2), 1px solid #ffff00)
@@ -132,7 +122,7 @@ for (let value of arr) {
 ''')
                     elif j == '_mixines.sass':
                         fileSass.write('''=font-face($fontFace, $expansion)
-  @font-face          
+  @font-face
     font-family: "#{$fontFace}"
     src: url("../fonts/#{$fontFace}.#{$expansion}")
 
@@ -146,11 +136,10 @@ for (let value of arr) {
         fileSass.write('''// Folder: Grid
 @import "./grid/_smartgrid.sass"
 //@import "./grid/_smartgrid-percentage.sass"
-//@import "./grid/_smartgrid-rem.sass"
 @import "./grid/_grid.sass"
 
 //Font icon
-@import "/Users/dilkree/IT/JS_MODULES/my_modules/icon/_mixines.sass"
+@import "/Users/dilkree/IT/JS_MODULES/my_modules/icons/_mixines.sass"
 
 // Folder: Core
 @import "./core/_fonts.sass"
@@ -225,33 +214,12 @@ mixin debug24
     print('---------------------------------------')
     print(r'В папке [app/pug] успешно создан файл - index, smartgrid')
     with open(fr'{getDirectory}/app/js/script.js', 'w', encoding='utf8') as fileJS:
-        fileJS.write(''''use strict';
+        fileJS.write('''"use strict";
 
-// import {checkCalc} from './functions/check-calc.js';
-''')
-    with open(fr'{getDirectory}/app/js/functions/check-calc.js', 'w', encoding='utf8') as fileJS:
-        fileJS.write(''''use strict';
-
-function checkCalc () {
-  window.onload =  function () {
-    const div = document.createElement('div');
-    const style = document.createElement('style');
-    style.setAttribute('rel', 'stylesheet');
-    div.style.width = 'calc(100%)';
-    if (div.style.length > 0) {
-      style.setAttribute('href', './css/style.css');
-    } else {
-      style.setAttribute('href', './css/style-percentage.css');
-    };
-    document.body.appendChild(style);
-    console.log(1);
-  }
-};
-
-export {checkCalc};
+// import checkCalc from "/Users/dilkree/IT/JS_MODULES/my_modules/my_javascript/function/check-calc.js ";
 ''')
     print('---------------------------------------')
-    print(r'В папке [app/js] успешно созданы файлы - script.js, check-calc.js')
+    print(r'В папке [app/js] успешно созданы файлы - main.js')
     with open (f'{getDirectory}/package.json', 'r', encoding='utf-8') as fileJSON:
         data = json.load(fileJSON)
     data['scripts'] = {
@@ -296,8 +264,8 @@ gulp.task('style', style);
 gulp.task('script', script);
 gulp.task('image', gulp.series(sprite, image));
 gulp.task('font', font);
-gulp.task('default', gulp.series(clean, sprite, gulp.parallel(image, style, script, htmlmin, font), watch));
 gulp.task('del', gulp.series(clean, sprite, gulp.parallel(image, style, script, htmlmin, font)));
+gulp.task('default', gulp.series(del, watch));
 gulp.task('deploy', github);
 ''')
     print('---------------------------------------')
@@ -322,7 +290,7 @@ module.exports = {
   },
   'scripts': {
     'appWatch': './app/js/**.*js',
-    'app': './app/js/script*.js',
+    'app': './app/js/main*.js',
     'dist': './dist/js'
   },
   'pug': {
@@ -367,12 +335,14 @@ module.exports = {
 const gulp = require('gulp');
 const browserSync = require('browser-sync').create();
 const webpack = require('webpack-stream');
+const changed = require('gulp-changed');
 
 const path = require('./path.js');
 const webConfig = require('./webpack.js');
 
 module.exports = function() {
   return gulp.src(path.scripts.app)
+    .pipe(changed(path.scripts.dist))
     .pipe(webpack(webConfig))
     .pipe(gulp.dest(path.scripts.dist))
     .pipe(browserSync.stream())
@@ -387,18 +357,24 @@ const path = require('./path.js');
 
 module.exports = {
   output: {
-    filename: 'script.js'
+    filename: '[name].js'
   },
   module: {
     rules: [
       {
         test: /\\.js$/,
         loader: 'babel-loader',
+        options: {
+          presets: ["@babel/preset-env"],
+          plugins: [
+            "@babel/plugin-proposal-class-properties"
+          ]
+        },
         exclude: '/node_modules/'
       }
     ]
   },
-  devtool: path.isMap ? 'source-map' : 'none',
+  devtool: path.isMap ? 'cheap-module-eval-source-map' : 'none',
   mode: path.isProd ? 'production' : 'development'
 };
 ''')
@@ -410,11 +386,13 @@ module.exports = {
 const gulp = require('gulp');
 const browserSync = require('browser-sync').create();
 const image = require('gulp-image');
+const changed = require('gulp-changed');
 
 const path = require('./path.js');
 
 module.exports = function() {
   return gulp.src(path.images.app)
+    .pipe(changed(path.images.dist))
     .pipe(image({
       pngquant: ['--speed=1', '--force', 256],
       mozjpeg: ['-quality', 75]
@@ -438,11 +416,13 @@ const mqpacker = require('css-mqpacker');
 const uncss = require('postcss-uncss');
 const gulpif = require('gulp-if');
 const sourcemaps = require('gulp-sourcemaps');
+const changed = require('gulp-changed');
 
 const path = require('./path.js');
 
 module.exports = function() {
   return gulp.src(path.styles.app)
+    .pipe(changed(path.style.dist))
     .pipe(gulpif(path.isMap, sourcemaps.init({ loadMaps: true })))
     .pipe(sass().on('error', sass.logError))
     .pipe(gulpif(path.isProd, postcss([
@@ -480,6 +460,7 @@ const gulp = require('gulp');
 const ttf2woff = require('gulp-ttf2woff');
 const browserSync = require('browser-sync').create();
 const fs = require('fs');
+const changed = require('gulp-changed');
 
 const path = require('./path.js');
 
@@ -490,6 +471,7 @@ module.exports = function() {
     fs.writeFileSync(fd, `@font-face\\n  font-family: "${file.split('.')[0]}"\\n  src: url("../fonts/${file.split('.')[0]}.woff")\\n$${file.split('.')[0].split('-').pop()}: ${file.split('.')[0]}\\n\\n`, { flag: 'a' });
   };
   return gulp.src(path.fonts.app)
+    .pipe(changed(path.fonts.dist))
     .pipe(ttf2woff())
     .pipe(gulp.dest(path.fonts.dist))
     .pipe(browserSync.stream())
