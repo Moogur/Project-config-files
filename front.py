@@ -27,6 +27,18 @@ def primaryProject():
                 os.makedirs(fr"{getDirectory}/app/{i}/{j}")
         else:
             os.mkdir(fr"{getDirectory}/app/{i}")
+    # TODO Создание файла .vscode/settings.json
+    spyFiles = {
+        "files.exclude": {
+            "**/node_modules": "true",
+            "package.json": "true",
+            ".gitignore": "true",
+            "front.py": "true"
+        }
+    }
+    os.mkdir(fr"{getDirectory}/.vscode/")
+    with open(fr"{getDirectory}/.vscode/settings.json", "w", encoding="utf-8") as fileJSON:
+        json.dump(spyFiles, fileJSON, indent=2, ensure_ascii=False)
     # TODO создание символической ссылки на node_modules
     os.symlink(symlinkNodeModules, "node_modules")
     print("---------------------------------------")
@@ -52,7 +64,9 @@ const settings = {
   mobileFirst: false,
   container: {
     maxWidth: "1280px", // Ширина макета
-    fields: "30px" // Оступы по краям сайта (padding)
+    // Оступы по краям сайта (padding)
+    // fields должен быть не меньше половины offset
+    fields: "30px"
   },
   breakPoints: {
     // Bootstrap breakPoints
@@ -423,7 +437,7 @@ module.exports = function() {
       outputStyle: "expanded"
     }).on("error", sass.logError))
     .pipe(gulpif(path.isProd, postcss([
-      //uncss({html: [`${path.pug.dist}/**/*.html`]}),
+      uncss({html: [`${path.pug.dist}/**/*.html`]}),
       mqpacker(),
       autoprefixer({ browsers: ["> 0.1%"], cascade: false }),
       cssnano({preset: ["default", {
