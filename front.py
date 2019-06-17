@@ -1,5 +1,5 @@
-﻿import os
-import json
+﻿import json
+import os
 
 addDirectory = {
     "sass": ("grid", "core", "layout"),
@@ -12,8 +12,8 @@ addFilePug = {
     "mixin": ("smartgrid.pug", )
 }
 addFileSass = {
-  "core": ("_fonts.sass", "_base.sass", "_variables.sass", "_mixines.sass"),
-  "grid": ("_grid.sass", )
+    "core": ("_fonts.sass", "_base.sass", "_variables.sass", "_mixines.sass"),
+    "grid": ("_grid.sass", )
 }
 symlinkNodeModules = r"/Users/dilkree/IT/JS_MODULES/node_modules"
 getDirectory = os.getcwd()
@@ -33,7 +33,10 @@ def primaryProject():
             "**/node_modules": "true",
             "package.json": "true",
             ".gitignore": "true",
-            "front.py": "true"
+            "LICENSE": "true",
+            "license": "true",
+            "readme.md": "true",
+            "README.md": "true"
         }
     }
     os.mkdir(fr"{getDirectory}/.vscode/")
@@ -56,51 +59,51 @@ const smartgrid = require("/Users/dilkree/IT/JS_MODULES/my_modules/smart-grid");
 const folderPath = "./app/sass/grid";
 
 const settings = {
-  filename: "_smartgrid",
-  outputStyle: "sass",
-  columns: 12,
-  offset: "20px", // Расстояние между столбцами (gutter)
-  // false => max-width, true => min-width
-  mobileFirst: false,
-  container: {
-    maxWidth: "1280px", // Ширина макета
-    // Оступы по краям сайта (padding)
-    // fields должен быть не меньше половины offset
-    fields: "30px"
-  },
-  breakPoints: {
-    // Bootstrap breakPoints
-    xl: {
-      width: "1200px",
-      fields: "30px"
+    filename: "_smartgrid",
+    outputStyle: "sass",
+    columns: 12,
+    offset: "20px", // Расстояние между столбцами (gutter)
+    // false => max-width, true => min-width
+    mobileFirst: false,
+    container: {
+        maxWidth: "1280px", // Ширина макета
+        // Оступы по краям сайта (padding)
+        // fields должен быть не меньше половины offset
+        fields: "30px"
     },
-    lg: {
-      width: "992px",
-      fields: "16px"
+    breakPoints: {
+        // Bootstrap breakPoints
+        xl: {
+        width: "1200px",
+        fields: "30px"
+        },
+        lg: {
+        width: "992px",
+        fields: "16px"
+        },
+        md: {
+        width: "768px",
+        fields: "24px"
+        },
+        sm: {
+        width: "576px",
+        fields: "18px"
+        }
     },
-    md: {
-      width: "768px",
-      fields: "24px"
+    mixinNames: {
+        container: "container",
+        shift: "offset"
     },
-    sm: {
-      width: "576px",
-      fields: "18px"
-    }
-  },
-  mixinNames: {
-    container: "container",
-    shift: "offset",
-  },
-  tab: "  "
+    tab: "  "
 };
 
 const arr = [undefined, {
-  filename: settings.filename + "-percentage",
-  offset: (parseInt(settings.offset) / parseInt(settings.container.maxWidth) * 100) + "%"
+    filename: settings.filename + "-percentage",
+    offset: (parseInt(settings.offset) / parseInt(settings.container.maxWidth) * 100) + "%"
 }];
 
 for (let value of arr) {
-  smartgrid(folderPath, Object.assign(settings, value));
+    smartgrid(folderPath, Object.assign(settings, value));
 }
 """)
     with open(fr"{getDirectory}/.gitignore", "w", encoding="utf8") as fileGitIgnore:
@@ -109,8 +112,6 @@ for (let value of arr) {
 /dist/
 /gulp/
 /node_modules
-/.gitignore
-/package.json
 /front.py
 /gulpfile.js
 /smartgrid-config.js
@@ -130,20 +131,20 @@ for (let value of arr) {
 +reset()
 
 .debug
-  +debug(rgba(0, 0, 0, 0.2), 1px solid #ffff00)
+    +debug(rgba(0, 0, 0, 0.2), 1px solid #ffff00)
 
 .container
-  +container()
+    +container()
 """)
                 elif j == "_mixines.sass":
                     fileSass.write("""=font-face($fontFace, $expansion)
-  @font-face
-    font-family: "#{$fontFace}"
-    src: url("../fonts/#{$fontFace}.#{$expansion}")
+    @font-face
+        font-family: "#{$fontFace}"
+        src: url("../fonts/#{$fontFace}.#{$expansion}")
 
 =box($width, $height: $width)
-  width: $width
-  height: $height
+    width: $width
+    height: $height
 """)
                 else:
                     pass
@@ -168,80 +169,117 @@ for (let value of arr) {
         filePug.write("""include ./mixin/smartgrid.pug
 doctype html
 html
-  head
-    meta(charset="utf-8")
-    title NAME-PROGECT
-    link(rel="stylesheet", href="./css/style.css")
-  body
-    """)
+    head
+        meta(charset="utf-8")
+        title NAME-PROGECT
+        link(rel="stylesheet", href="./css/style.css")
+    body
+""")
     for i in addFilePug:
         for j in addFilePug[i]:
             with open(fr"{getDirectory}/app/pug/{i}/{j}", "w", encoding="utf8") as filePug:
                 if j == "smartgrid.pug":
                     filePug.write("""mixin debug12
-  div.debug
-    div
-      div
+    div.debug
         div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
+            div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
 
 mixin debug24
-  div.debug
-    div
-      div
+    div.debug
         div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
-        div
+            div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
 """)
     print("---------------------------------------")
     print(r"В папке [app/pug] успешно создан файл - index, smartgrid")
     with open(fr"{getDirectory}/app/js/main.js", "w", encoding="utf8") as fileJS:
         fileJS.write(""""use strict";
 
-// import checkCalc from "/Users/dilkree/IT/JS_MODULES/my_modules/my_javascript/function/check-calc.js ";
+// const {checkCalc} = require("/Users/dilkree/IT/JS_MODULES/my_modules/my_javascript/function/check-calc.js");
 """)
     print("---------------------------------------")
     print(r"В папке [app/js] успешно созданы файлы - main.js")
     with open(f"{getDirectory}/package.json", "r", encoding="utf-8") as fileJSON:
         data = json.load(fileJSON)
     data["scripts"] = {
-      "smartgrid": "node smartgrid-config.js",
-      "Development": "gulp",
-      "Production": "gulp del --prod"
+        "smartgrid": "node smartgrid-config.js",
+        "Development": "gulp",
+        "Production": "gulp del --prod"
+    }
+    data["browsers"] = [
+        "> 0.1%"
+    ]
+    data["devDependencies"] = {
+        "@babel/core": "^7.4.5",
+        "@babel/preset-env": "^7.4.5",
+        "autoprefixer": "^9.6.0",
+        "babel-loader": "^8.0.6",
+        "browser-sync": "^2.26.7",
+        "css-mqpacker": "^7.0.0",
+        "cssnano": "^4.1.10",
+        "del": "^3.0.0",
+        "gulp": "^4.0.2",
+        "gulp-changed": "^4.0.0",
+        "gulp-gh-pages": "^0.5.4",
+        "gulp-if": "^2.0.2",
+        "gulp-image": "^5.1.0",
+        "gulp-postcss": "^8.0.0",
+        "gulp-pug": "^4.0.1",
+        "gulp-pugbem": "^2.2.4",
+        "gulp-sass": "^4.0.2",
+        "gulp-selectors": "^0.1.10",
+        "gulp-sourcemaps": "^2.6.5",
+        "gulp-ttf2woff": "^1.1.1",
+        "gulp.spritesmith": "^6.10.1",
+        "merge-stream": "^1.0.1",
+        "mozjpeg": "^6.0.1",
+        "node-sass": "^4.12.0",
+        "pngquant": "^2.0.1",
+        "postcss-uncss": "^0.16.1",
+        "smart-grid": "^2.1.2",
+        "uncss": "^0.16.2",
+        "webpack-stream": "^5.2.1"
+    }
+    data["dependencies"] = {
+        "jquery": "^3.4.1"
     }
     with open(f"{getDirectory}/package.json", "w", encoding="utf-8") as fileJSON:
-        json.dump(data, fileJSON, indent=2, ensure_ascii=False)
+        json.dump(data, fileJSON, indent=4, ensure_ascii=False)
 
 
 # TODO инициализация gulp-проекта
@@ -265,14 +303,16 @@ const clean = require("./gulp/clean.js");
 const github = require("./gulp/github.js");
 const sprite = require("./gulp/sprite.js");
 
+
 function watch() {
-  browserSync.init({ server: { baseDir: path.baseDir }, browser: path.browsers.firefox });
-  gulp.watch(path.styles.appWatch, style);
-  gulp.watch(path.scripts.appWatch, script);
-  gulp.watch(path.pug.appWatch, htmlmin);
-  gulp.watch(path.images.appAll, gulp.series(sprite, image));
-  gulp.watch(path.fonts.app, font);
-};
+    browserSync.init({ server: { baseDir: path.baseDir }, browser: path.browsers.firefox });
+    gulp.watch(path.styles.appWatch, style);
+    gulp.watch(path.scripts.appWatch, script);
+    gulp.watch(path.pug.appWatch, htmlmin);
+    gulp.watch(path.images.appAll, gulp.series(sprite, image));
+    gulp.watch(path.fonts.app, font);
+}
+
 
 gulp.task("html", htmlmin);
 gulp.task("style", style);
@@ -288,58 +328,57 @@ gulp.task("deploy", github);
     # TODO создание файла path.js
     with open(fr"{getDirectory}/gulp/path.js", "w", encoding="utf8") as fileGulpJS:
         fileGulpJS.write(""""use strict";
-/* global __dirname */
+/* global __dirname process */
 
 module.exports = {
-  "isDev": !(process.argv.indexOf("--prod") !== -1),
-  "isProd": (process.argv.indexOf("--prod") !== -1),
-  "styles": {
-    "appWatch": "./app/sass/**/*.sass",
-    "app": "./app/sass/style*.sass",
-    "dist": "./dist/css"
-  },
-  "scripts": {
-    "appWatch": "./app/js/**.*js",
-    "app": "./app/js/main*.js",
-    "dist": "./dist/js"
-  },
-  "pug": {
-    "appWatch": "./app/pug/**/*.pug",
-    "app": "./app/pug/*.pug",
-    "dist": "./dist"
-  },
-  "images": {
-    "app": [
-      "./app/img/**/*.+(jpg|jpeg)",
-      "./app/img/sprit?.png",
-      "!./app/img/maket*.*"
-    ],
-    "appAll": "./app/img/**/*.+(jpg|jpeg|png)",
-    "dist": "./dist/img"
-  },
-  "sprite": {
-    "app": "./app/img/**/*.png",
-    "distImg": "app/img",
-    "distSass": "./app/sass/sprite"
-  },
-  "fonts": {
-    "app": "./app/fonts/**/*.+(ttf|woff)",
-    "dist": "./dist/fonts"
-  },
-  "baseDir": "./dist",
-  "github": "./dist/**/*",
-  "browsers": {
-    "firefox": "firefox developer edition",
-    "chrome": "google chrome",
-    "safari": "safari"
-  },
-  "path": __dirname
+    "isDev": !(process.argv.indexOf("--prod") !== -1),
+    "isProd": (process.argv.indexOf("--prod") !== -1),
+    "styles": {
+        "appWatch": "./app/sass/**/*.sass",
+        "app": "./app/sass/style*.sass",
+        "dist": "./dist/css"
+    },
+    "scripts": {
+        "appWatch": "./app/js/**.*js",
+        "app": "./app/js/main*.js",
+        "dist": "./dist/js"
+    },
+    "pug": {
+        "appWatch": "./app/pug/**/*.pug",
+        "app": "./app/pug/*.pug",
+        "dist": "./dist"
+    },
+    "images": {
+        "app": [
+        "./app/img/**/*.+(jpg|jpeg)",
+        "./app/img/sprit?.png",
+        "!./app/img/maket*.*"
+        ],
+        "appAll": "./app/img/**/*.+(jpg|jpeg|png)",
+        "dist": "./dist/img"
+    },
+    "sprite": {
+        "app": "./app/img/**/*.png",
+        "distImg": "app/img",
+        "distSass": "./app/sass/sprite"
+    },
+    "fonts": {
+        "app": "./app/fonts/**/*.+(ttf|woff)",
+        "dist": "./dist/fonts"
+    },
+    "baseDir": "./dist",
+    "github": "./dist/**/*",
+    "browsers": {
+        "firefox": "firefox developer edition",
+        "chrome": "google chrome",
+        "safari": "safari"
+    },
+    "path": __dirname
 };
 """)
     # TODO создание файла script.js
     with open(fr"{getDirectory}/gulp/script.js", "w", encoding="utf8") as fileGulpJS:
         fileGulpJS.write(""""use strict";
-/* global module */
 
 const gulp = require("gulp");
 const browserSync = require("browser-sync").create();
@@ -350,47 +389,45 @@ const path = require("./path.js");
 const webConfig = require("./webpack.js");
 
 module.exports = function() {
-  return gulp.src(path.scripts.app)
-    .pipe(changed(path.scripts.dist))
-    .pipe(webpack(webConfig))
-    .pipe(gulp.dest(path.scripts.dist))
-    .pipe(browserSync.stream());
+    return gulp.src(path.scripts.app)
+        .pipe(changed(path.scripts.dist))
+        .pipe(webpack(webConfig))
+        .pipe(gulp.dest(path.scripts.dist))
+        .pipe(browserSync.stream());
 };
 """)
     # TODO создание файла webpack.js
     with open(fr"{getDirectory}/gulp/webpack.js", "w", encoding="utf8") as fileGulpJS:
         fileGulpJS.write(""""use strict";
-/* global module */
 
 const path = require("./path.js");
 
 module.exports = {
-  output: {
-    filename: "[name].js"
-  },
-  module: {
-    rules: [
-      {
-        test: /\\.js$/,
-        loader: "babel-loader",
-        options: {
-          presets: ["@babel/preset-env"],
-          plugins: [
-            "@babel/plugin-proposal-class-properties"
-          ]
-        },
-        exclude: "/node_modules/"
-      }
-    ]
-  },
-  devtool: path.isProd ? "none" : "cheap-module-eval-source-map",
-  mode: path.isProd ? "production" : "development"
+    output: {
+        filename: "[name].js"
+    },
+    module: {
+        rules: [
+            {
+                test: /\\.js$/,
+                loader: "babel-loader",
+                options: {
+                    presets: ["@babel/preset-env"],
+                    plugins: [
+                        "@babel/plugin-proposal-class-properties"
+                    ]
+                },
+                exclude: "/node_modules/"
+            }
+        ]
+    },
+    devtool: path.isProd ? "none" : "cheap-module-eval-source-map",
+    mode: path.isProd ? "production" : "development"
 };
 """)
     # TODO создание файла image.js
     with open(fr"{getDirectory}/gulp/image.js", "w", encoding="utf8") as fileGulpJS:
         fileGulpJS.write(""""use strict";
-/* global module */
 
 const gulp = require("gulp");
 const browserSync = require("browser-sync").create();
@@ -400,20 +437,19 @@ const changed = require("gulp-changed");
 const path = require("./path.js");
 
 module.exports = function() {
-  return gulp.src(path.images.app)
-    .pipe(changed(path.images.dist))
-    .pipe(image({
-      pngquant: ["--speed=1", "--force", 256],
-      mozjpeg: ["-quality", 75]
-    }))
-    .pipe(gulp.dest(path.images.dist))
-    .pipe(browserSync.stream());
+    return gulp.src(path.images.app)
+        .pipe(changed(path.images.dist))
+        .pipe(image({
+            pngquant: ["--speed=1", "--force", 256],
+            mozjpeg: ["-quality", 75]
+        }))
+        .pipe(gulp.dest(path.images.dist))
+        .pipe(browserSync.stream());
 };
 """)
     # TODO создание файла style.js
     with open(fr"{getDirectory}/gulp/style.js", "w", encoding="utf8") as fileGulpJS:
         fileGulpJS.write(""""use strict";
-/* global module */
 
 const gulp = require("gulp");
 const sass = require("gulp-sass");
@@ -430,42 +466,40 @@ const changed = require("gulp-changed");
 const path = require("./path.js");
 
 module.exports = function() {
-  return gulp.src(path.styles.app)
-    .pipe(changed(path.styles.dist))
-    .pipe(gulpif(path.isDev, sourcemaps.init()))
-    .pipe(sass({
-      outputStyle: "expanded"
-    }).on("error", sass.logError))
-    .pipe(gulpif(path.isProd, postcss([
-      uncss({html: [`${path.pug.dist}/**/*.html`]}),
-      mqpacker(),
-      autoprefixer({ browsers: ["> 0.1%"], cascade: false }),
-      cssnano({preset: ["default", {
-        discardComments: {removeAll: true}
-      }]})
-    ])))
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest(path.styles.dist))
-    .pipe(browserSync.stream());
+    return gulp.src(path.styles.app)
+        .pipe(changed(path.styles.dist))
+        .pipe(gulpif(path.isDev, sourcemaps.init()))
+        .pipe(sass({
+            outputStyle: "expanded"
+        }).on("error", sass.logError))
+        .pipe(gulpif(path.isProd, postcss([
+            uncss({html: [`${path.pug.dist}/**/*.html`]}),
+            mqpacker(),
+            autoprefixer(),
+            cssnano({preset: ["default", {
+                discardComments: {removeAll: true}
+            }]})
+        ])))
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest(path.styles.dist))
+        .pipe(browserSync.stream());
 };
 """)
     # TODO создание файла clean.js
     with open(fr"{getDirectory}/gulp/clean.js", "w", encoding="utf8") as fileGulpJS:
         fileGulpJS.write(""""use strict";
-/* global module */
 
 const del = require("del");
 
-const path = require("./path.js")
+const path = require("./path.js");
 
 module.exports = function() {
-  return del([path.baseDir])
+    return del([path.baseDir]);
 };
 """)
     # TODO создание файла font.js
     with open(fr"{getDirectory}/gulp/font.js", "w", encoding="utf8") as fileGulpJS:
         fileGulpJS.write(""""use strict";
-/* global module */
 
 const gulp = require("gulp");
 const ttf2woff = require("gulp-ttf2woff");
@@ -476,22 +510,23 @@ const changed = require("gulp-changed");
 const path = require("./path.js");
 
 module.exports = function() {
-  const fd = fs.openSync(`${path.path}/../app/sass/core/_fonts.sass`, "w+");
-  const folder = fs.readdirSync(`${path.path}/../app/fonts`);
-  for (let file of folder) {
-    fs.writeFileSync(fd, `@font-face\\n  font-family: "${file.split(".")[0]}"\\n  src: url("../fonts/${file.split(".")[0]}.woff")\\n$${file.split(".")[0].split("-").pop()}: ${file.split(".")[0]}\\n\\n`, { flag: "a" });
-  }
-  return gulp.src(path.fonts.app)
-    .pipe(changed(path.fonts.dist))
-    .pipe(ttf2woff())
-    .pipe(gulp.dest(path.fonts.dist))
-    .pipe(browserSync.stream());
+    const fd = fs.openSync(`${path.path}/../app/sass/core/_fonts.sass`, "w+");
+    const folder = fs.readdirSync(`${path.path}/../app/fonts`);
+    for (let file of folder) {
+        if (file.split(".")[1] === "ttf") {
+            fs.writeFileSync(fd, `@font-face\\n  font-family: "${file.split(".")[0]}"\\n  src: url("../fonts/${file.split(".")[0]}.woff")\\n$${file.split(".")[0].split("-").pop()}: ${file.split(".")[0]}\\n\\n`, { flag: "a" });
+        }
+    }
+    return gulp.src(path.fonts.app)
+        .pipe(changed(path.fonts.dist))
+        .pipe(ttf2woff())
+        .pipe(gulp.dest(path.fonts.dist))
+        .pipe(browserSync.stream());
 };
 """)
     # TODO создание файла pug.js
     with open(fr"{getDirectory}/gulp/pug.js", "w", encoding="utf8") as fileGulpJS:
         fileGulpJS.write(""""use strict";
-/* global module */
 
 const gulp = require("gulp");
 const browserSync = require("browser-sync").create();
@@ -501,18 +536,17 @@ const pugbem =require("/Users/dilkree/IT/JS_MODULES/my_modules/gulp-pugbem");
 const path = require("./path.js");
 
 module.exports = function() {
-  return gulp.src(path.pug.app)
-    .pipe(pug({
-      pretty: path.isProd ? false : true,
-      plugins: [pugbem]
-    }).on("error", console.log))
-    .pipe(gulp.dest(path.pug.dist))
-    .pipe(browserSync.stream());
+    return gulp.src(path.pug.app)
+        .pipe(pug({
+            pretty: path.isProd ? false : true,
+            plugins: [pugbem]
+        }).on("error", console.log))
+        .pipe(gulp.dest(path.pug.dist))
+        .pipe(browserSync.stream());
 };
 """)
     with open(fr"{getDirectory}/gulp/github.js", "w", encoding="utf8") as fileGulpJS:
         fileGulpJS.write(""""use strict";
-/* global module */
 
 const gulp = require("gulp");
 const ghPages = require("gulp-gh-pages");
@@ -520,13 +554,12 @@ const ghPages = require("gulp-gh-pages");
 const path = require("./path.js");
 
 module.exports = function() {
-  return gulp.src(path.github)
-    .pipe(ghPages());
+    return gulp.src(path.github)
+        .pipe(ghPages());
 };
 """)
     with open(fr"{getDirectory}/gulp/sprite.js", "w", encoding="utf8") as fileGulpJS:
         fileGulpJS.write(""""use strict";
-/* global module */
 
 const gulp = require("gulp");
 const browserSync = require("browser-sync").create();
@@ -537,35 +570,35 @@ const fs = require("fs");
 const path = require("./path.js");
 
 module.exports = function() {
-  // Если есть, удаляем файл с именем sprite.png
-  fs.unlink(`${path.path}/../${path.sprite.distImg}/sprite.png`, function(err){
-    if(err) {
-      console.log(err);
-    } else {
-      console.log(`File sprite.png is deleted`);
-    }
-  });
-  let spriteData = gulp.src(path.sprite.app)
-    .pipe(spritesmith({
-      imgName: "sprite.png",
-      cssName: "_sprite.sass",
-      cssFormat: "sass",
-      algoritm: "binary-tree",
-      cssTemplate: "./gulp/sprite.mustache",
-      cssVarMap: function(sprite) {
-        sprite.name = "s-" + sprite.name;
-      }
-    }).on("error", console.log));
-  // Сохранение спрайта (png)
-  let imgStream = spriteData.img
-    .pipe(gulp.dest(path.sprite.distImg));
-  // Сохранение sass файла
-  let sassStream = spriteData.css
-    .pipe(gulp.dest(path.sprite.distSass));
-  // Запуск gulp таска оновременно для спрайта и sass
-  return merge(imgStream, sassStream)
-    .on("error", console.log)
-    .pipe(browserSync.stream());
+    // Если есть, удаляем файл с именем sprite.png
+    fs.unlink(`${path.path}/../${path.sprite.distImg}/sprite.png`, function(err){
+        if(err) {
+            console.log(err);
+        } else {
+            console.log(`File sprite.png is deleted`);
+        }
+    });
+    let spriteData = gulp.src(path.sprite.app)
+        .pipe(spritesmith({
+            imgName: "sprite.png",
+            cssName: "_sprite.sass",
+            cssFormat: "sass",
+            algoritm: "binary-tree",
+            cssTemplate: "./gulp/sprite.mustache",
+            cssVarMap: function(sprite) {
+                sprite.name = "s-" + sprite.name;
+            }
+        }).on("error", console.log));
+    // Сохранение спрайта (png)
+    let imgStream = spriteData.img
+        .pipe(gulp.dest(path.sprite.distImg));
+    // Сохранение sass файла
+    let sassStream = spriteData.css
+        .pipe(gulp.dest(path.sprite.distSass));
+    // Запуск gulp таска оновременно для спрайта и sass
+    return merge(imgStream, sassStream)
+        .on("error", console.log)
+        .pipe(browserSync.stream());
 };
 """)
     with open(fr"{getDirectory}/gulp/sprite.mustache", "w", encoding="utf8") as fileMustache:
@@ -582,22 +615,22 @@ ${{name}}: {{px.x}} {{px.y}} {{px.offset_x}} {{px.offset_y}} {{px.width}} {{px.h
         os.mkdir(fr"{getDirectory}/app/sass/sprite")
     with open(fr"{getDirectory}/app/sass/sprite/_mixins.sass", "w", encoding="utf8") as fileSass:
         fileSass.write("""@mixin spriteWidth($sprite)
-  width: nth($sprite, 5)
+    width: nth($sprite, 5)
 
 @mixin spriteHeight($sprite)
-  height: nth($sprite, 6)
+    height: nth($sprite, 6)
 
 @mixin spritePosition($sprite)
-  background-position: nth($sprite, 3) nth($sprite, 4)
+    background-position: nth($sprite, 3) nth($sprite, 4)
 
 @mixin spriteImage($sprite)
-  background-image: url("../img/#{nth($sprite, 9)}")
+    background-image: url("../img/#{nth($sprite, 9)}")
 
 @mixin sprite($sprite)
-  @include spriteImage($sprite)
-  @include spritePosition($sprite)
-  @include spriteWidth($sprite)
-  @include spriteHeight($sprite)
+    @include spriteImage($sprite)
+    @include spritePosition($sprite)
+    @include spriteWidth($sprite)
+    @include spriteHeight($sprite)
 """)
     with open(fr"{getDirectory}/app/sass/sprite/_sprite.sass", "w", encoding="utf8") as fileSass:
         pass

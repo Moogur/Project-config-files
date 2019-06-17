@@ -9,7 +9,7 @@
   "module": true
 },
 "rules": {
-  "indent": ["error", 2],
+  "indent": ["error", 4],
   "linebreak-style": ["error", "unix"],
   "semi": ["error", "always", {
     "omitLastInOneLineBlock": true

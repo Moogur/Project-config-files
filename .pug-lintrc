@@ -55,5 +55,5 @@
 "validateExtensions": true,
 "validateSelfClosingTags": true,
 "validateTemplateString": null,
-"validateIndentation": 2
+"validateIndentation": 4
 }

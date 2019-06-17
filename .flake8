@@ -1,0 +1,6 @@
+[flake8]
+max-line-length = 120
+max-doc-length = 80
+exclude = .git,__pycache__
+inline-quotes = "
+import-order-style = google
