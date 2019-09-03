@@ -4,12 +4,12 @@ import os
 addDirectory = {
     "sass": ("grid", "core", "layout"),
     "js": ("functions", ),
-    "img": bool,
+    "img": ("sprites", ),
     "fonts": bool,
-    "pug": ("mixin", )
+    "pug": ("layout", )
 }
 addFilePug = {
-    "mixin": ("smartgrid.pug", )
+    "layout": ("mixines.pug", "base.pug")
 }
 addFileSass = {
     "core": ("_fonts.sass", "_base.sass", "_variables.sass", "_mixines.sass"),
@@ -24,9 +24,9 @@ def primaryProject():
     for i in addDirectory:
         if type(addDirectory[i]) is tuple:
             for j in addDirectory[i]:
-                os.makedirs(fr"{getDirectory}/app/{i}/{j}")
+                os.makedirs(fr"{getDirectory}/src/{i}/{j}")
         else:
-            os.mkdir(fr"{getDirectory}/app/{i}")
+            os.mkdir(fr"{getDirectory}/src/{i}")
     # TODO Создание файла .vscode/settings.json
     spyFiles = {
         "files.exclude": {
@@ -35,13 +35,17 @@ def primaryProject():
             ".gitignore": "true",
             "LICENSE": "true",
             "license": "true",
-            "readme.md": "true",
-            "README.md": "true"
+            "*.md": "true",
+            "front.py": "true",
+            "*.studio": "true",
+            "*.psd": "true",
+            "*.sketch": "true"
         }
     }
-    os.mkdir(fr"{getDirectory}/.vscode/")
+    if not os.path.isdir(fr"{getDirectory}/.vscode/"):
+        os.mkdir(fr"{getDirectory}/.vscode/")
     with open(fr"{getDirectory}/.vscode/settings.json", "w", encoding="utf-8") as fileJSON:
-        json.dump(spyFiles, fileJSON, indent=2, ensure_ascii=False)
+        json.dump(spyFiles, fileJSON, indent=4, ensure_ascii=False)
     # TODO создание символической ссылки на node_modules
     os.symlink(symlinkNodeModules, "node_modules")
     print("---------------------------------------")
@@ -56,7 +60,7 @@ def primaryProject():
         fileSG.write(""""use strict";
 
 const smartgrid = require("/Users/dilkree/IT/JS_MODULES/my_modules/smart-grid");
-const folderPath = "./app/sass/grid";
+const folderPath = "./src/sass/grid";
 
 const settings = {
     filename: "_smartgrid",
@@ -74,20 +78,20 @@ const settings = {
     breakPoints: {
         // Bootstrap breakPoints
         xl: {
-        width: "1200px",
-        fields: "30px"
+            width: "1200px",
+            fields: "30px"
         },
         lg: {
-        width: "992px",
-        fields: "16px"
+            width: "992px",
+            fields: "16px"
         },
         md: {
-        width: "768px",
-        fields: "24px"
+            width: "768px",
+            fields: "24px"
         },
         sm: {
-        width: "576px",
-        fields: "18px"
+            width: "576px",
+            fields: "18px"
         }
     },
     mixinNames: {
@@ -116,14 +120,15 @@ for (let value of arr) {
 /gulpfile.js
 /smartgrid-config.js
 **/*.psd
-**/maket*.jpg
-*.txt""")
+**/*.studio
+**/*.sketch
+**/*.txt""")
     print("---------------------------------------")
     print("Файлы: .gitignore, smartgrid-config.js успешно созданы")
     # TODO создание файлов *.sass
     for i in addFileSass:
         for j in addFileSass[i]:
-            with open(fr"{getDirectory}/app/sass/{i}/{j}", "w", encoding="utf8") as fileSass:
+            with open(fr"{getDirectory}/src/sass/{i}/{j}", "w", encoding="utf8") as fileSass:
                 if j == "_grid.sass":
                     fileSass.write("""@import "./_smartgrid.sass"
 //@import "./_smartgrid-percentage.sass"
@@ -148,7 +153,7 @@ for (let value of arr) {
 """)
                 else:
                     pass
-    with open(fr"{getDirectory}/app/sass/style.sass", "w", encoding="utf8") as fileSass:
+    with open(fr"{getDirectory}/src/sass/style.sass", "w", encoding="utf8") as fileSass:
         fileSass.write("""// Folder: Grid
 @import "./grid/_grid.sass"
 
@@ -162,78 +167,64 @@ for (let value of arr) {
 @import "./core/_base.sass"
 """)
     print("---------------------------------------")
-    print(r"В папке [app/sass] успешно создан файл - style")
+    print(r"В папке [src/sass] успешно создан файл - style")
     print(r"А также файлы - fonts, variables, base, grid")
     # TODO создание файла index.pug
-    with open(fr"{getDirectory}/app/pug/index.pug", "w", encoding="utf8") as filePug:
-        filePug.write("""include ./mixin/smartgrid.pug
-doctype html
-html
-    head
-        meta(charset="utf-8")
-        title NAME-PROGECT
-        link(rel="stylesheet", href="./css/style.css")
-    body
+    with open(fr"{getDirectory}/src/pug/index.pug", "w", encoding="utf8") as filePug:
+        filePug.write("""extends ./layout/base.pug
+
+block style
+    link(rel="stylesheet" href="css/style.css")
+
+block title
+    title Заголовок страницы
+
+block bodyContent
 """)
     for i in addFilePug:
         for j in addFilePug[i]:
-            with open(fr"{getDirectory}/app/pug/{i}/{j}", "w", encoding="utf8") as filePug:
-                if j == "smartgrid.pug":
+            with open(fr"{getDirectory}/src/pug/{i}/{j}", "w", encoding="utf8") as filePug:
+                if j == "mixines.pug":
                     filePug.write("""mixin debug12
     div.debug
         div
             div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
+                - let n = 0;
+                while n < 12
+                    div
+                    - n++;
 
 mixin debug24
     div.debug
         div
             div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
-                div
+                - let n = 0;
+                while n < 24
+                    div
+                    - n++;
+""")
+                if j == "base.pug":
+                    filePug.write("""include ./mixines.pug
+doctype html
+html(lang="ru")
+    head
+        meta(charset="utf-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        block title
+        block style
+    body
+        block bodyContent
 """)
     print("---------------------------------------")
-    print(r"В папке [app/pug] успешно создан файл - index, smartgrid")
-    with open(fr"{getDirectory}/app/js/main.js", "w", encoding="utf8") as fileJS:
+    print(r"В папке [src/pug] успешно создан файл - index, smartgrid")
+    with open(fr"{getDirectory}/src/js/main.js", "w", encoding="utf8") as fileJS:
         fileJS.write(""""use strict";
 
 // const {checkCalc} = require("/Users/dilkree/IT/JS_MODULES/my_modules/my_javascript/function/check-calc.js");
 """)
     print("---------------------------------------")
-    print(r"В папке [app/js] успешно созданы файлы - main.js")
+    print(r"В папке [src/js] успешно созданы файлы - main.js")
     with open(f"{getDirectory}/package.json", "r", encoding="utf-8") as fileJSON:
         data = json.load(fileJSON)
     data["scripts"] = {
@@ -305,12 +296,12 @@ const sprite = require("./gulp/sprite.js");
 
 
 function watch() {
-    browserSync.init({ server: { baseDir: path.baseDir }, browser: path.browsers.firefox });
-    gulp.watch(path.styles.appWatch, style);
-    gulp.watch(path.scripts.appWatch, script);
-    gulp.watch(path.pug.appWatch, htmlmin);
-    gulp.watch(path.images.appAll, gulp.series(sprite, image));
-    gulp.watch(path.fonts.app, font);
+    browserSync.init({ server: { baseDir: path.baseDir }, browser: path.browsers.chrome });
+    gulp.watch(path.styles.srcWatch, style);
+    gulp.watch(path.scripts.srcWatch, script);
+    gulp.watch(path.pug.srcWatch, htmlmin);
+    gulp.watch(path.images.srcAll, gulp.series(sprite, image));
+    gulp.watch(path.fonts.src, font);
 }
 
 
@@ -334,44 +325,42 @@ module.exports = {
     "isDev": !(process.argv.indexOf("--prod") !== -1),
     "isProd": (process.argv.indexOf("--prod") !== -1),
     "styles": {
-        "appWatch": "./app/sass/**/*.sass",
-        "app": "./app/sass/style*.sass",
+        "srcWatch": "./src/sass/**/*.sass",
+        "src": "./src/sass/style*.sass",
         "dist": "./dist/css"
     },
     "scripts": {
-        "appWatch": "./app/js/**.*js",
-        "app": "./app/js/main*.js",
+        "srcWatch": "./src/js/**.*js",
+        "src": "./src/js/main*.js",
         "dist": "./dist/js"
     },
     "pug": {
-        "appWatch": "./app/pug/**/*.pug",
-        "app": "./app/pug/*.pug",
+        "srcWatch": "./src/pug/**/*.pug",
+        "src": "./src/pug/*.pug",
         "dist": "./dist"
     },
     "images": {
-        "app": [
-        "./app/img/**/*.+(jpg|jpeg)",
-        "./app/img/sprit?.png",
-        "!./app/img/maket*.*"
+        "src": [
+            "./src/img/**/*.+(jpg|jpeg|png)",
+            "!./src/img/sprites"
         ],
-        "appAll": "./app/img/**/*.+(jpg|jpeg|png)",
+        "srcAll": "./src/img/**/*.+(jpg|jpeg|png)",
         "dist": "./dist/img"
     },
     "sprite": {
-        "app": "./app/img/**/*.png",
-        "distImg": "app/img",
-        "distSass": "./app/sass/sprite"
+        "src": "./src/img/sprites/*.png",
+        "distImg": "src/img",
+        "distSass": "./src/sass/sprite"
     },
     "fonts": {
-        "app": "./app/fonts/**/*.+(ttf|woff)",
+        "src": "./src/fonts/**/*.+(ttf|woff|otf)",
         "dist": "./dist/fonts"
     },
     "baseDir": "./dist",
     "github": "./dist/**/*",
     "browsers": {
         "firefox": "firefox developer edition",
-        "chrome": "google chrome",
-        "safari": "safari"
+        "chrome": "google chrome"
     },
     "path": __dirname
 };
@@ -389,7 +378,7 @@ const path = require("./path.js");
 const webConfig = require("./webpack.js");
 
 module.exports = function() {
-    return gulp.src(path.scripts.app)
+    return gulp.src(path.scripts.src)
         .pipe(changed(path.scripts.dist))
         .pipe(webpack(webConfig))
         .pipe(gulp.dest(path.scripts.dist))
@@ -437,7 +426,7 @@ const changed = require("gulp-changed");
 const path = require("./path.js");
 
 module.exports = function() {
-    return gulp.src(path.images.app)
+    return gulp.src(path.images.src)
         .pipe(changed(path.images.dist))
         .pipe(image({
             pngquant: ["--speed=1", "--force", 256],
@@ -466,7 +455,7 @@ const changed = require("gulp-changed");
 const path = require("./path.js");
 
 module.exports = function() {
-    return gulp.src(path.styles.app)
+    return gulp.src(path.styles.src)
         .pipe(changed(path.styles.dist))
         .pipe(gulpif(path.isDev, sourcemaps.init()))
         .pipe(sass({
@@ -510,14 +499,14 @@ const changed = require("gulp-changed");
 const path = require("./path.js");
 
 module.exports = function() {
-    const fd = fs.openSync(`${path.path}/../app/sass/core/_fonts.sass`, "w+");
-    const folder = fs.readdirSync(`${path.path}/../app/fonts`);
+    const fd = fs.openSync(`${path.path}/../src/sass/core/_fonts.sass`, "w+");
+    const folder = fs.readdirSync(`${path.path}/../src/fonts`);
     for (let file of folder) {
-        if (file.split(".")[1] === "ttf") {
-            fs.writeFileSync(fd, `@font-face\\n  font-family: "${file.split(".")[0]}"\\n  src: url("../fonts/${file.split(".")[0]}.woff")\\n$${file.split(".")[0].split("-").pop()}: ${file.split(".")[0]}\\n\\n`, { flag: "a" });
+        if (["ttf", "woff", "otf"].indexOf(file.split(".")[1]) != -1) {
+            fs.writeFileSync(fd, `@font-face\n  font-family: "${file.split(".")[0]}"\n  src: url("../fonts/${file.split(".")[0]}.woff")\n$${file.split(".")[0]}: ${file.split(".")[0]}\n\n`, { flag: "a" });
         }
     }
-    return gulp.src(path.fonts.app)
+    return gulp.src(path.fonts.src)
         .pipe(changed(path.fonts.dist))
         .pipe(ttf2woff())
         .pipe(gulp.dest(path.fonts.dist))
@@ -536,7 +525,7 @@ const pugbem =require("/Users/dilkree/IT/JS_MODULES/my_modules/gulp-pugbem");
 const path = require("./path.js");
 
 module.exports = function() {
-    return gulp.src(path.pug.app)
+    return gulp.src(path.pug.src)
         .pipe(pug({
             pretty: path.isProd ? false : true,
             plugins: [pugbem]
@@ -578,7 +567,7 @@ module.exports = function() {
             console.log(`File sprite.png is deleted`);
         }
     });
-    let spriteData = gulp.src(path.sprite.app)
+    let spriteData = gulp.src(path.sprite.src)
         .pipe(spritesmith({
             imgName: "sprite.png",
             cssName: "_sprite.sass",
@@ -610,10 +599,10 @@ ${{name}}: {{px.x}} {{px.y}} {{px.offset_x}} {{px.offset_y}} {{px.width}} {{px.h
     print("В папке [gulp] - успешно созданы файлы: clean.js,")
     print("font.js, hpug.js, image.js, path.js, script.js, style.js, gpages.js")
     print("sprite.js, smartgrid.js, sprite.mustache")
-    # TODO Создание папки app/sass/sprite и в ней файла _mixins.sass
-    if not os.path.isdir(fr"{getDirectory}/app/sass/sprite"):
-        os.mkdir(fr"{getDirectory}/app/sass/sprite")
-    with open(fr"{getDirectory}/app/sass/sprite/_mixins.sass", "w", encoding="utf8") as fileSass:
+    # TODO Создание папки src/sass/sprite и в ней файла _mixins.sass
+    if not os.path.isdir(fr"{getDirectory}/src/sass/sprite"):
+        os.mkdir(fr"{getDirectory}/src/sass/sprite")
+    with open(fr"{getDirectory}/src/sass/sprite/_mixins.sass", "w", encoding="utf8") as fileSass:
         fileSass.write("""@mixin spriteWidth($sprite)
     width: nth($sprite, 5)
 
@@ -632,11 +621,11 @@ ${{name}}: {{px.x}} {{px.y}} {{px.offset_x}} {{px.offset_y}} {{px.width}} {{px.h
     @include spriteWidth($sprite)
     @include spriteHeight($sprite)
 """)
-    with open(fr"{getDirectory}/app/sass/sprite/_sprite.sass", "w", encoding="utf8") as fileSass:
+    with open(fr"{getDirectory}/src/sass/sprite/_sprite.sass", "w", encoding="utf8") as fileSass:
         pass
     print("---------------------------------------")
-    print("В папке [app/sass/sprite] - успешно созданы файлы mixins и sprite")
-    with open(fr"{getDirectory}/app/sass/style.sass", "a", encoding="utf8") as fileSass:
+    print("В папке [src/sass/sprite] - успешно созданы файлы mixins и sprite")
+    with open(fr"{getDirectory}/src/sass/style.sass", "a", encoding="utf8") as fileSass:
         fileSass.write("""\n// Folder: Sprite
 @import "./sprite/_sprite.sass"
 @import "./sprite/_mixins.sass"

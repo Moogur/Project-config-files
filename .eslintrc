@@ -1,22 +1,33 @@
 {
-"extends": "eslint:recommended",
-"parser": "babel-eslint",
-"globals": {
-  "window": true,
-  "document": true,
-  "console": true,
-  "require": true,
-  "module": true
-},
-"rules": {
-  "indent": ["error", 4],
-  "linebreak-style": ["error", "unix"],
-  "semi": ["error", "always", {
-    "omitLastInOneLineBlock": true
-  }],
-  "comma-dangle": ["error", "never"],
-  "no-console": "off",
-  "max-len": ["error", { "code": 120 }],
-  "no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1, "maxBOF": 0 }],
-  "func-style": ["error", "declaration"]
-}}
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/all",
+    "plugin:react-pug/all"
+  ],
+  "parser": "babel-eslint",
+  "globals": {
+    "window": true,
+    "document": true,
+    "console": true,
+    "require": true,
+    "module": true
+  },
+  "plugins": [
+    "react-pug"
+  ],
+  "rules": {
+    "indent": ["error", 2],
+    "linebreak-style": ["error", "unix"],
+    "semi": ["error", "always", {"omitLastInOneLineBlock": true}],
+    "comma-dangle": ["error", "never"],
+    "no-console": "off",
+    "max-len": ["error", {"code": 120}],
+    "no-multiple-empty-lines": ["error", {"max": 2, "maxEOF": 1, "maxBOF": 0}],
+    "func-style": ["error", "declaration", { "allowArrowFunctions": true }],
+    "react/sort-prop-types": "off",
+    "react/jsx-sort-default-props": "off",
+    "react/state-in-constructor": "off",
+    "react/no-set-state": "off",
+    "react/destructuring-assignment": ["always", { "ignoreClassFields": true }]
+  }
+}

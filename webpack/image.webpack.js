@@ -14,7 +14,7 @@ module.exports = function () {
               progressive: true,
               quality: 75
             },
-             pngquant: {
+            pngquant: {
               force: 256,
               speed: 1
             },
